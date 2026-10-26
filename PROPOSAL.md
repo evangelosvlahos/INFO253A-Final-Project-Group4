@@ -6,15 +6,10 @@ We're team 4.
 Team members include Evan Vlahos, Ernest Makaika, Riska Ardilla Putri and Chengyi Zhang. 
 
 ## Project Idea
-
-We plan to work on a fitness logger as our final project. 
-The user should enter a completed workout. 
-This web application will log and organize the details of each workout, what the user did, how they feel, and any additional notes. 
-We plan to provide detailed calendar view, sumamry dashboard, filtering of views, and so on. 
-The workout logging data will be persistently stored locally via `localStorage`. 
-A key issue is that the user might already to too exhausted after the workout to do a detailed logging. 
-To address this limitation, we plan to integrate an external AI API for voice recognition, so the user can describe what they did using speech instead of typing. 
-Through this API, the user can effortlessly log a new entry without needing to sit down and type.
+We want to build a fitness logger where users record a completed workout, including what they did, how they felt, and any additional notes. 
+The web app will organize entries in a detailed calendar view and a summary dashboard, with filters for browsing past workouts, and will save all data in the browser using `localStorage`. 
+We noticed that people are often too tired after working out to type everything in. 
+So we plan to integrate an external AI API for voice recognition to make logging easier, so users can describe what they did using speech instead of sitting down to type. 
 
 ## External API to use
 

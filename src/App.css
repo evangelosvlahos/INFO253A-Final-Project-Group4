@@ -1,0 +1,258 @@
+/* Paste your Assignment 1 styles.css here. Keep the icons in src/assets/ so url(assets/...) paths keep working. */
+/* This is your CSS files */
+* {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+:root {
+  /* Color Variables */
+  --radius: 5px;
+}
+
+h1{
+  font-size: 20px;
+}
+
+/* header stuffs */
+.site-header {
+  display: flex;
+  background-color: #dc4c3e;
+  color: #ffffff;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  padding: 10px;
+  padding-left: 30px;
+}
+
+.site-header img {
+  object-fit: contain; /* do not stretch the icon */
+}
+
+.search-box {
+  margin-left: 30px; /*some spacing from the hamburger */
+  padding: 5px;
+  background-color: rgba(255,255,255,0.25);
+  width: 200px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+}
+
+.search-box * {
+  vertical-align: middle;
+}
+.search-box img {
+  margin-right: 10px;
+}
+
+.search-box input {
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  flex: 1;
+  min-width: 0;
+}
+
+.search-box input::placeholder { /* select into the placeholder */
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* use this to push the task-counter to the right */
+.iampadding {
+  flex-grow: 1;
+}
+
+.task-counter {
+  margin-right: 10px;
+  line-height: 30px;
+}
+
+.task-counter *{
+  vertical-align: middle;
+}
+
+.container-wrapper {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  height: 100vh; /* use this to size the body to match the page */
+  margin: 0;
+  padding: 5px;
+  /* background-color: #0a58ca; */
+  box-sizing: border-box; /* use this so it doesn't scroll under padding*/
+}
+
+/*navigation stuffs */
+.nav {
+  padding: 10px;
+  /* display: flex; */
+  /* flex-direction: column; */
+  width: 300px;
+  background-color: #fefbf2;
+  box-sizing: border-box;
+  /* position: fixed; */
+}
+
+.nav ul {
+  width: 100%;
+  padding: 0;
+}
+
+.nav li {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.nav li a {
+  display: inline-block;
+  padding: 8px 20px;
+  box-sizing: border-box; /* make it inward such that hover does not highlight outside */
+  line-height: 1.5;
+  width: 100%;
+  text-decoration: none;
+  color: #000000;
+}
+
+.nav a img {
+  vertical-align: middle;
+}
+.nav a .count {
+  color: #7e7d79;
+  font-size: 12px;
+}
+
+.nav a:hover {
+  background: #f2f6ff;
+  color: #0a58ca;
+}
+
+.container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.workout-list {
+  list-style: none;
+  padding: 0;
+}
+
+.workout-list li {
+  padding: 0.5em;
+}
+
+input.circle {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: solid 1px;
+  flex-shrink: 0;
+  margin-right: 1em;
+  vertical-align: middle;
+  appearance: none;
+}
+input.circle:hover {
+  border-color: #dc4c3e;
+}
+
+input.circle:checked {
+  background-color: #dc4c3e;
+  border-color: #dc4c3e;
+}
+
+button.cross {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: none;
+  flex-shrink: 0;
+  margin-right: 1em;
+  vertical-align: middle;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color:#000000;
+}
+
+button.cross:hover {
+  color: #dc4c3e;
+}
+
+
+.task-form {
+  display: flex;
+  align-items: center;
+  padding: 0.5em;
+}
+
+.task-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  margin-right: 1em;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #000000;
+}
+
+.task-form button:hover {
+  color: #dc4c3e;
+}
+
+.task-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid #000000;
+  color: inherit;
+  font: inherit;
+}
+
+.task-form input:focus-visible {
+  outline: none;
+  border-bottom-color: #dc4c3e;
+}
+
+.task-filters button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.task-filters button:hover,
+.task-filters button.selected {
+  color: #dc4c3e;
+}
+
+@media (max-width: 480px) {
+  .nav {
+      display: none;
+  }
+}

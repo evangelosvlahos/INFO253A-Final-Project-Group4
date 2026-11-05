@@ -1,0 +1,3 @@
+/* Global reset only. Your Assignment 1 styles go in App.css. */
+* { box-sizing: border-box; }
+body { margin: 0; }

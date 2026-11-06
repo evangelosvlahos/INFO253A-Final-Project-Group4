@@ -1,0 +1,77 @@
+.workout-calendar {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.workout-calendar > p {
+  margin: 0 0 8px;
+}
+
+.workout-calendar .react-calendar {
+  width: min(100%, 560px);
+  border: 1px solid #e5e5e5;
+  border-radius: var(--radius);
+}
+
+.workout-calendar .react-calendar__tile {
+  min-height: 56px;
+}
+
+.workout-calendar .react-calendar__tile--now {
+  background: #fff3f1;
+}
+
+.workout-calendar .react-calendar__tile--active,
+.workout-calendar .react-calendar__tile--active:enabled:hover,
+.workout-calendar .react-calendar__tile--active:enabled:focus {
+  background: #dc4c3e;
+  color: #fff;
+}
+
+.workout-calendar__marker {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 3px auto 0;
+  border-radius: 50%;
+  background: #dc4c3e;
+}
+
+.react-calendar__tile--active .workout-calendar__marker {
+  background: #fff;
+}
+
+.workout-calendar__details {
+  width: min(100%, 560px);
+}
+
+.workout-calendar__details h2 {
+  margin-bottom: 8px;
+}
+
+.workout-calendar__details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.workout-calendar__details li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-left: 3px solid #dc4c3e;
+  background: #fefbf2;
+}
+
+.workout-calendar__details li + li {
+  margin-top: 8px;
+}
+
+.workout-calendar__details li span {
+  color: #666;
+  text-transform: capitalize;
+}
+
+.workout-calendar__details li p {
+  margin: 0;
+}

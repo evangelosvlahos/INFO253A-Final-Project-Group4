@@ -5,6 +5,9 @@ import inboxIcon from './assets/inbox_icon.png'
 import calendarIcon from './assets/calendar_icon.png'
 import upcomingIcon from './assets/upcoming_icon.png'
 
+import { useState } from 'react'
+import WorkoutCalendar from './components/WorkoutCalendar.jsx'
+
 /**
  * @typedef {Object} BaseWorkout
  * @property {string} id
@@ -27,6 +30,8 @@ import upcomingIcon from './assets/upcoming_icon.png'
  */
 
 function App() {
+  const [activeView, setActiveView] = useState('home');
+
   /** @type {Workout[]} */
   const workouts = [
     {
@@ -76,12 +81,13 @@ function App() {
       <div className="container-wrapper">
         <nav className="nav" aria-label="Main navigation">
           <ul className="nav-list">
-            <li><a href="#home"><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
-            <li><a aria-disabled="true"><img src={calendarIcon} alt="" /> Calendar</a></li>
+            <li><a href="#home" onClick={() => setActiveView('home')}><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
+            <li><a href="#calendar" onClick={() => setActiveView('calendar')}><img src={calendarIcon} alt="" /> Calendar <span className="count">{workouts.length}</span></a></li>
             <li><a aria-disabled="true"><img src={upcomingIcon} alt="" /> Dashboard</a></li>
           </ul>
         </nav>
-        <Home workouts={workouts} />
+        {activeView === 'home' && <Home workouts={workouts} />}
+        {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} />}
       </div>
     </div>
   )

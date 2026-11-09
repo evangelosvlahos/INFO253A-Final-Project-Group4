@@ -2,12 +2,14 @@ import { useState } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import './WorkoutCalendar.css'
+import { formatWorkoutTime } from '../utils/time.jsx'
 
 /**
  * @typedef {Object} Workout
  * @property {string} id
  * @property {string} name
  * @property {string} date YYYY-MM-DD
+ * @property {string} time HH:mm (local start time).
  * @property {number} durationMinutes
  * @property {string} type
  * @property {string} [notes]
@@ -16,7 +18,7 @@ import './WorkoutCalendar.css'
 /**
  * @param {{ workouts: Workout[] }} props
  */
-function WorkoutCalendar({ workouts }) {
+function WorkoutCalendar({ workouts, timeFormat }) {
   const [selectedDate, setSelectedDate] = useState(() => new Date())
   const selectedDateKey = toDateKey(selectedDate)
   const selectedWorkouts = workouts.filter((workout) => workout.date === selectedDateKey)
@@ -59,7 +61,7 @@ function WorkoutCalendar({ workouts }) {
             {selectedWorkouts.map((workout) => (
               <li key={workout.id}>
                 <strong>{workout.name}</strong>
-                <span>{workout.type} · {workout.durationMinutes} min</span>
+                <span>{formatWorkoutTime(workout.time, timeFormat)} · {workout.type} · {workout.durationMinutes} min</span>
                 {workout.notes && <p>{workout.notes}</p>}
               </li>
             ))}

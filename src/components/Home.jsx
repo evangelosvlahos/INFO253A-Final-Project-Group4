@@ -1,11 +1,11 @@
 import WorkoutList from './WorkoutList.jsx'
 
-function Home({ workouts }) {
+function Home({ workouts, timeFormat }) {
   return (
     <main className="container" id="home">
       <h1>Home</h1>
-      <p>Sample workouts</p>
-      <WorkoutList workouts={workouts} />
+      <p>Workouts</p>
+      <WorkoutList workouts={workouts} timeFormat={timeFormat} />
     </main>
   )
 }

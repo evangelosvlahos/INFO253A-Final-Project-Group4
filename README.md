@@ -12,7 +12,14 @@ npm run dev
 
 `npm run build` creates a production build.
 
-The workout schema and three hard-coded sample workouts are in [src/App.jsx](src/App.jsx).
+The workout schema and state are in [src/App.jsx](src/App.jsx).
+Workouts load from localStorage and save whenever state changes. The three
+samples are used when no saved data exists or saved data cannot be loaded.
+
+Every workout requires a local start `time` in `HH:mm` format (00:00–23:59),
+alongside the local `date`. Home and Calendar display the start time.
+On reload, old `fitness-log-workouts` storage is deleted and the app starts
+fresh under `fitness-log-workouts-v2`. All saved entries require a valid time.
 
 ## Workout calendar
 
@@ -27,4 +34,5 @@ npm install react-calendar
 ```
 
 `WorkoutCalendar` gets its data through the `workouts` prop. Each workout needs
-a `date` in `YYYY-MM-DD` format, along with its name, type, and duration.
+a `date` in `YYYY-MM-DD` format and a `time` in `HH:mm` format, along with its
+name, type, and duration.

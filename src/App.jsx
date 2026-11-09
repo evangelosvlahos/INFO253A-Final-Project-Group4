@@ -7,6 +7,8 @@ import upcomingIcon from './assets/upcoming_icon.png'
 
 import { useState, useEffect } from 'react'
 import WorkoutCalendar from './components/WorkoutCalendar.jsx'
+import WorkoutForm from './components/WorkoutForm.jsx'
+import Settings from './components/Settings.jsx'
 import { isValidTime } from './utils/time.jsx'
 
 /**
@@ -32,6 +34,7 @@ import { isValidTime } from './utils/time.jsx'
  */
 
 const STORAGE_KEY = 'fitness-log-workouts-v2'
+const PREFERENCES_KEY = 'fitness-log-preferences'
 
 /** @type {Workout[]} */
 const sampleWorkouts = [
@@ -81,6 +84,19 @@ const sampleWorkouts = [
 
 function App() {
   const [activeView, setActiveView] = useState('home');
+  const [isLogging, setIsLogging] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [preferences, setPreferences] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY))
+      return {
+        theme: saved?.theme === 'dark' ? 'dark' : 'light',
+        timeFormat: saved?.timeFormat === '24' ? '24' : '12',
+      }
+    } catch {
+      return { theme: 'light', timeFormat: '12' }
+    }
+  })
   const [workouts, setWorkouts] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
@@ -109,20 +125,43 @@ function App() {
     }
   }, [workouts])
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = preferences.theme
+  }, [preferences.theme])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ theme: preferences.theme, timeFormat: preferences.timeFormat }))
+    } catch {
+      console.warn('Could not save display preferences.')
+    }
+  }, [preferences])
+
+  function handleSaveWorkout(entry) {
+    const workout = { ...entry, id: crypto.randomUUID() }
+    setWorkouts(previous => [workout, ...previous])
+    setIsLogging(false)
+  }
+
   return (
     <div className="app">
-      <Header />
+      <Header onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
       <div className="container-wrapper">
         <nav className="nav" aria-label="Main navigation">
+          <button className="log-workout-button" type="button" onClick={() => setIsLogging(true)} aria-haspopup="dialog">
+            + Log workout
+          </button>
           <ul className="nav-list">
             <li><a href="#home" onClick={() => setActiveView('home')}><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
             <li><a href="#calendar" onClick={() => setActiveView('calendar')}><img src={calendarIcon} alt="" /> Calendar <span className="count">{workouts.length}</span></a></li>
             <li><a aria-disabled="true"><img src={upcomingIcon} alt="" /> Dashboard</a></li>
           </ul>
         </nav>
-        {activeView === 'home' && <Home workouts={workouts} />}
-        {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} />}
+        {activeView === 'home' && <Home workouts={workouts} timeFormat={preferences.timeFormat} />}
+        {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} timeFormat={preferences.timeFormat} />}
       </div>
+      {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
+      {isSettingsOpen && <Settings preferences={preferences} onSave={settings => { setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>
   )
 }

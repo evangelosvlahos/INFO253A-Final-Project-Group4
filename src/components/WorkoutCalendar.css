@@ -9,8 +9,38 @@
 
 .workout-calendar .react-calendar {
   width: min(100%, 560px);
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.workout-calendar .react-calendar__navigation button,
+.workout-calendar .react-calendar__tile {
+  color: inherit;
+}
+
+.workout-calendar .react-calendar__navigation button:enabled:hover,
+.workout-calendar .react-calendar__navigation button:enabled:focus,
+.workout-calendar .react-calendar__tile:enabled:hover,
+.workout-calendar .react-calendar__tile:enabled:focus {
+  background: var(--hover-bg);
+}
+
+.workout-calendar .react-calendar__navigation button:disabled,
+.workout-calendar .react-calendar__tile:disabled {
+  background: var(--button-bg);
+  color: var(--muted);
+}
+
+.workout-calendar .react-calendar__month-view__days__day--weekend {
+  color: var(--weekend);
+}
+
+.workout-calendar .react-calendar__month-view__days__day--neighboringMonth,
+.workout-calendar .react-calendar__decade-view__years__year--neighboringDecade,
+.workout-calendar .react-calendar__century-view__decades__decade--neighboringCentury {
+  color: var(--muted);
 }
 
 .workout-calendar .react-calendar__tile {
@@ -18,13 +48,17 @@
 }
 
 .workout-calendar .react-calendar__tile--now {
-  background: #fff3f1;
+  background: var(--today-bg);
+}
+
+.workout-calendar .react-calendar__tile--hasActive {
+  background: var(--today-bg);
 }
 
 .workout-calendar .react-calendar__tile--active,
 .workout-calendar .react-calendar__tile--active:enabled:hover,
 .workout-calendar .react-calendar__tile--active:enabled:focus {
-  background: #dc4c3e;
+  background: var(--accent);
   color: #fff;
 }
 
@@ -34,7 +68,7 @@
   height: 6px;
   margin: 3px auto 0;
   border-radius: 50%;
-  background: #dc4c3e;
+  background: var(--accent);
 }
 
 .react-calendar__tile--active .workout-calendar__marker {
@@ -59,8 +93,8 @@
   flex-direction: column;
   gap: 4px;
   padding: 12px;
-  border-left: 3px solid #dc4c3e;
-  background: #fefbf2;
+  border-left: 3px solid var(--accent);
+  background: var(--sidebar-bg);
 }
 
 .workout-calendar__details li + li {
@@ -68,7 +102,7 @@
 }
 
 .workout-calendar__details li span {
-  color: #666;
+  color: var(--muted);
   text-transform: capitalize;
 }
 

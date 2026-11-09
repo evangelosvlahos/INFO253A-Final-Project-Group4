@@ -15,11 +15,24 @@ npm run dev
 The workout schema and state are in [src/App.jsx](src/App.jsx).
 Workouts load from localStorage and save whenever state changes. The three
 samples are used when no saved data exists or saved data cannot be loaded.
+Use **Log workout** above Home to add an entry in a popup. On small screens,
+the button is in the top bar.
 
-Every workout requires a local start `time` in `HH:mm` format (00:00–23:59),
-alongside the local `date`. Home and Calendar display the start time.
-On reload, old `fitness-log-workouts` storage is deleted and the app starts
-fresh under `fitness-log-workouts-v2`. All saved entries require a valid time.
+## Settings and workout time
+
+Settings includes light/dark mode and a 12/24-hour clock preference. These two
+preferences are saved in localStorage.
+Choose **Save settings** to apply changes; Cancel discards them.
+
+Every new workout requires `time`, its local start time stored as `HH:mm`
+(24-hour format, `00:00`–`23:59`), alongside the local `date`. Display format
+does not change the stored value. Home and Calendar use the clock preference,
+and the entry form accepts time in the selected format. No timezone conversion
+is applied to these local date/time fields.
+
+This is a breaking schema change. On reload, the old `fitness-log-workouts`
+storage is deleted and the app starts fresh under `fitness-log-workouts-v2`.
+All stored workouts must have a valid time; there is no old-format support.
 
 ## Workout calendar
 

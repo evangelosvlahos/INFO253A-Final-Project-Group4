@@ -86,6 +86,7 @@ function App() {
   const [activeView, setActiveView] = useState('home');
   const [isLogging, setIsLogging] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [apiKey, setApiKey] = useState('')
   const [preferences, setPreferences] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY))
@@ -160,8 +161,8 @@ function App() {
         {activeView === 'home' && <Home workouts={workouts} timeFormat={preferences.timeFormat} />}
         {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} timeFormat={preferences.timeFormat} />}
       </div>
-      {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
-      {isSettingsOpen && <Settings preferences={preferences} onSave={settings => { setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
+      {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} apiKey={apiKey} onOpenSettings={() => setIsSettingsOpen(true)} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
+      {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>
   )
 }

@@ -405,6 +405,21 @@ button.cross:hover {
   border: 0;
 }
 
+.voice-input {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.voice-input audio {
+  width: 100%;
+}
+
+.voice-input p {
+  margin: 0;
+}
+
 .workout-form button:disabled {
   cursor: default;
   opacity: 0.6;

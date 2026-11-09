@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import VoiceInput from './VoiceInput.jsx'
 import WorkoutTimeInput from './WorkoutTimeInput.jsx'
 import { isValidTime } from '../utils/time.jsx'
 
-function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
+function WorkoutForm({ apiKey, timeFormat = '12', onOpenSettings, onAdd, onClose }) {
   const dialogRef = useRef(null)
   const [form, setForm] = useState(() => {
     const today = new Date()
@@ -19,6 +20,7 @@ function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
   })
   const [exercises, setExercises] = useState([{ name: '', sets: [{ reps: '', weightKg: '' }] }])
   const [error, setError] = useState('')
+  const [isVoiceBusy, setIsVoiceBusy] = useState(false)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -29,6 +31,28 @@ function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
   function handleChange(event) {
     const { name, value } = event.target
     setForm(previous => ({ ...previous, [name]: value }))
+  }
+
+  function handleVoiceDraft(draft) {
+    setForm(previous => ({
+      name: draft.name,
+      type: draft.type,
+      date: draft.date ?? previous.date,
+      time: draft.time ?? '',
+      durationMinutes: draft.durationMinutes === null ? '' : String(draft.durationMinutes),
+      feeling: draft.feeling === null ? '' : String(draft.feeling),
+      distanceKm: draft.type === 'running' && draft.data.distanceKm !== null ? String(draft.data.distanceKm) : '',
+      notes: draft.notes ?? '',
+    }))
+    const blankSet = { reps: '', weightKg: '' }
+    setExercises(draft.type === 'lifting' && draft.data.exercises.length ? draft.data.exercises.map(exercise => ({
+      name: exercise.name,
+      sets: exercise.sets.length ? exercise.sets.map(set => ({
+        reps: set.reps === null ? '' : String(set.reps),
+        weightKg: set.weightKg === null ? '' : String(set.weightKg),
+      })) : [{ ...blankSet }],
+    })) : [{ name: '', sets: [{ ...blankSet }] }])
+    setError('')
   }
 
   function updateExercise(index, changes) {
@@ -46,6 +70,7 @@ function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
 
   function handleSubmit(event) {
     event.preventDefault()
+    if (isVoiceBusy) return
     if (!form.name.trim()) {
       setError('Please enter a workout name.')
       return
@@ -87,8 +112,9 @@ function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
     <dialog ref={dialogRef} className="workout-dialog" aria-labelledby="workout-form-title" onCancel={onClose}>
       <form className="workout-form" onSubmit={handleSubmit}>
         <h1 id="workout-form-title">Log workout</h1>
+        <VoiceInput apiKey={apiKey} onDraft={handleVoiceDraft} onBusyChange={setIsVoiceBusy} onOpenSettings={onOpenSettings} />
 
-        <fieldset className="workout-fields">
+        <fieldset className="workout-fields" disabled={isVoiceBusy}>
           <label>
             Workout name
             <input name="name" value={form.name} onChange={handleChange} required autoFocus />
@@ -173,7 +199,7 @@ function WorkoutForm({ timeFormat = '12', onAdd, onClose }) {
         {error && <p className="form-error" role="alert">{error}</p>}
         <div className="workout-form-actions">
           <button type="button" onClick={onClose}>Cancel</button>
-          <button className="save-workout-button" type="submit">Save workout</button>
+          <button className="save-workout-button" type="submit" disabled={isVoiceBusy}>Save workout</button>
         </div>
       </form>
     </dialog>

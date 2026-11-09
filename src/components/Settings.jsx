@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { formatWorkoutTime } from '../utils/time.jsx'
 
-function Settings({ preferences, onSave, onClose }) {
+function Settings({ apiKey, preferences, onSave, onClose }) {
   const dialogRef = useRef(null)
+  const [key, setKey] = useState(apiKey)
   const [theme, setTheme] = useState(preferences.theme)
   const [timeFormat, setTimeFormat] = useState(preferences.timeFormat)
 
@@ -14,7 +15,7 @@ function Settings({ preferences, onSave, onClose }) {
 
   function handleSubmit(event) {
     event.preventDefault()
-    onSave({ preferences: { theme, timeFormat } })
+    onSave({ apiKey: key.trim(), preferences: { theme, timeFormat } })
   }
 
   return (
@@ -36,7 +37,14 @@ function Settings({ preferences, onSave, onClose }) {
           </select>
         </label>
         <p>Time preview: {formatWorkoutTime('13:30', timeFormat)}</p>
+        <label>
+          Gemini API key
+          <input type="password" value={key} onChange={event => setKey(event.target.value)} autoComplete="off" spellCheck={false} />
+        </label>
+        <p>Kept in memory until you reload this page. A browser-only app cannot keep API keys fully secret.</p>
+        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer noopener">Get a Gemini API key</a>
         <div className="workout-form-actions">
+          <button type="button" onClick={() => setKey('')}>Clear key</button>
           <button type="button" onClick={onClose}>Cancel</button>
           <button className="save-workout-button" type="submit">Save settings</button>
         </div>

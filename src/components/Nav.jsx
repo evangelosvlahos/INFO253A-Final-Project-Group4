@@ -34,7 +34,7 @@ function Nav({ tab, onChange, mic }) {
       </div>
       <button
         type="button"
-        className={`nav-log ${mode === 'listening' ? 'is-listening' : ''} ${mode === 'disabled' ? 'is-disabled' : ''}`}
+        className={`nav-log ${tab === 'log' ? 'has-label' : ''} ${mode === 'listening' ? 'is-listening' : ''} ${mode === 'disabled' ? 'is-disabled' : ''}`}
         aria-label={mode === 'listening' ? 'Done listening' : tab === 'log' ? 'Start listening' : 'Log a workout'}
         aria-current={tab === 'log' ? 'page' : undefined}
         disabled={mode === 'disabled'}
@@ -42,6 +42,8 @@ function Nav({ tab, onChange, mic }) {
       >
         {/* A plus everywhere; on the Log form it turns into the mic that fills the form in. */}
         {tab !== 'log' ? <PlusIcon /> : mode === 'listening' ? <CheckIcon /> : <MicIcon />}
+        {/* On the Log form the button says what it does: speak, then done. */}
+        {tab === 'log' && <span className="nav-log-label" aria-hidden="true">{mode === 'listening' ? 'Done' : 'Speak'}</span>}
       </button>
     </nav>
   )

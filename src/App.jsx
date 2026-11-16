@@ -1,4 +1,3 @@
-import './App.css'
 import Home from './components/Home.jsx'
 import Nav from './components/Nav.jsx'
 import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
@@ -159,6 +158,7 @@ function App() {
 
   function goTo(view) {
     setOpenId(null)
+    setIsSettingsOpen(false)
     setActiveView(view)
     window.scrollTo(0, 0)
   }
@@ -168,7 +168,19 @@ function App() {
     window.scrollTo(0, 0)
   }
 
+  function openSettings() {
+    setIsSettingsOpen(true)
+    window.scrollTo(0, 0)
+  }
+
+  function closeSettings() {
+    setIsSettingsOpen(false)
+    window.scrollTo(0, 0)
+  }
+
   const openedWorkout = openId ? workouts.find(workout => workout.id === openId) : undefined
+  /** One of the tabs is showing, rather than a screen pushed over them. */
+  const onTab = !openedWorkout && !isSettingsOpen
 
   const isDark = preferences.theme === 'dark'
 
@@ -184,7 +196,7 @@ function App() {
       >
         {isDark ? <SunIcon /> : <MoonIcon />}
       </button>
-      <button className="icon-btn" type="button" aria-label="Settings" aria-haspopup="dialog" onClick={() => setIsSettingsOpen(true)}>
+      <button className="icon-btn" type="button" aria-label="Settings" onClick={openSettings}>
         <SettingsIcon />
       </button>
     </div>
@@ -193,7 +205,19 @@ function App() {
   return (
     <div className="app">
       <div className="frame">
-        {openedWorkout && (
+        {isSettingsOpen && (
+          <Settings
+            apiKey={apiKey}
+            preferences={preferences}
+            onSave={settings => {
+              setApiKey(settings.apiKey)
+              setPreferences(settings.preferences)
+              closeSettings()
+            }}
+            onClose={closeSettings}
+          />
+        )}
+        {openedWorkout && !isSettingsOpen && (
           <WorkoutDetail
             workout={openedWorkout}
             timeFormat={preferences.timeFormat}
@@ -205,7 +229,7 @@ function App() {
             }}
           />
         )}
-        {!openedWorkout && activeView === 'home' && (
+        {onTab && activeView === 'home' && (
           <Home
             workouts={workouts}
             timeFormat={preferences.timeFormat}
@@ -214,24 +238,28 @@ function App() {
             onAll={() => goTo('workouts')}
           />
         )}
-        {!openedWorkout && activeView === 'workouts' && (
+        {onTab && activeView === 'workouts' && (
           <Workouts workouts={workouts} tools={tools} onOpen={openWorkout} />
         )}
-        {!openedWorkout && activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
+        {onTab && activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
+        {/* The Log form stays in place, out of sight, while Settings is open over it,
+            so nothing typed or recorded is lost on the way to adding a key. */}
         {!openedWorkout && activeView === 'log' && (
-          <Log
-            timeFormat={preferences.timeFormat}
-            // The key typed in Settings comes first; .env.local is the fallback for local development.
-            apiKey={apiKey.trim() || ENV_API_KEY}
-            onSave={handleSaveWorkout}
-            onDone={() => goTo('home')}
-            registerMic={setMic}
-          />
+          <div className="screen-keep" hidden={isSettingsOpen}>
+            <Log
+              timeFormat={preferences.timeFormat}
+              // The key typed in Settings comes first; .env.local is the fallback for local development.
+              apiKey={apiKey.trim() || ENV_API_KEY}
+              onOpenSettings={openSettings}
+              onSave={handleSaveWorkout}
+              onDone={() => goTo('home')}
+              registerMic={setMic}
+            />
+          </div>
         )}
-        {/* A workout is a pushed screen: back button, no tab bar. */}
-        {!openedWorkout && <Nav tab={activeView} onChange={goTo} mic={mic} />}
+        {/* A workout and Settings are pushed screens: back button, no tab bar. */}
+        {onTab && <Nav tab={activeView} onChange={goTo} mic={mic} />}
       </div>
-      {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>
   )
 }

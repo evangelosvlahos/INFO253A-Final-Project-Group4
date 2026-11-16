@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { extractWorkout } from '../services/gemini.jsx'
 import { useRecorder } from '../utils/useRecorder.jsx'
 import { ALL_FEELS, FEEL_LABELS, fmtPace, points, shortDescription } from '../utils/workout.jsx'
-import { daysAgo, fmtDayShort, fmtDayTitle, fmtMinutes, today } from '../utils/dates.jsx'
+import { daysAgo, fmtDayTitle, today } from '../utils/dates.jsx'
 import { DAY_END, formatWorkoutTime, nowMinutes, toClock, toMinutes } from '../utils/time.jsx'
 import { ChoiceSheet, TimeSheet } from './TimeSheet.jsx'
 import NumInput, { decimal, digits, openPicker } from './NumInput.jsx'
@@ -14,6 +14,9 @@ import './Log.css'
 
 /** How long the "Workout saved" confirmation stays up before going home. */
 const SAVED_MS = 1800
+
+/** Without a key, voice is a step of setting up rather than something that went wrong. */
+const NEEDS_KEY = 'Add a Gemini API key in Settings to log by voice. Or fill in the form below.'
 
 /** The types on offer. Each opens its own rows. */
 const KINDS = [
@@ -44,10 +47,11 @@ const blankForm = () => ({
  * shortcut on top of it: the round button in the nav records, Gemini works out
  * what was said, and the fields fill in. The form stays on screen throughout.
  *
+ * onOpenSettings opens Settings over the form, for when voice needs a key.
  * onDone is called once the save has been confirmed on screen.
  * registerMic hands the nav's round button its role: { mode, onPress }, or null on leaving.
  */
-function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
+function Log({ timeFormat = '12', apiKey, onOpenSettings, onSave, onDone, registerMic }) {
   const [phase, setPhase] = useState('form')
   const [form, setForm] = useState(blankForm)
   /** Extra detail Gemini picked up from the recording, kept with the workout. */
@@ -101,7 +105,7 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
     setClip(null)
     setPicking(null)
     if (!apiKey.trim()) {
-      setVoice({ ok: false, text: 'Voice needs a Gemini API key. Add yours in Settings, then try again.' })
+      setVoice({ ok: false, needsKey: true, text: NEEDS_KEY })
       return
     }
     recorder.start()
@@ -145,10 +149,9 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
       setClip(null)
     } catch (cause) {
       if (request.current !== controller) return
-      setVoice({
-        ok: false,
-        text: controller.signal.aborted ? 'That took too long. Try again.' : cause instanceof Error ? cause.message : 'Something went wrong. Try again.',
-      })
+      const text = controller.signal.aborted ? 'That took too long. Try again.' : cause instanceof Error ? cause.message : 'Something went wrong. Try again.'
+      // A problem with the key is fixed in Settings, so the card offers the way there.
+      setVoice({ ok: false, needsKey: /API key/i.test(text), text })
     } finally {
       clearTimeout(timeout)
       if (request.current === controller) {
@@ -165,6 +168,11 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
     request.current = null
     setFilling(false)
   }
+
+  // Back from Settings with a different key: the complaint about the old one no longer applies.
+  useEffect(() => {
+    setVoice(current => (current?.needsKey ? null : current))
+  }, [apiKey])
 
   // Leaving the screen drops any request still in flight.
   useEffect(() => () => request.current?.abort(), [])
@@ -252,9 +260,6 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
             <CheckIcon />
           </span>
           <h1 className="home-title">Workout saved</h1>
-          <p className="saved-sub">
-            {form.name.trim()} · {fmtMinutes(Math.max(1, Math.round(duration)))} · {fmtDayShort(form.date)}
-          </p>
         </div>
       </section>
     )
@@ -274,11 +279,14 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
         </button>
       </div>
 
-      {/* Voice at work, above the form it's filling in. The form stays where it is. */}
-      {(busy || clip || voice) && (
-        <div className="vc-said rise" role={voice && !voice.ok ? 'alert' : 'status'}>
+      {/* Voice, above the form it fills in. A blank form opens with the invitation to speak;
+          after that the card shows what voice is doing, or what went wrong. The form stays where it is. */}
+      {(busy || clip || voice || !dirty) && (
+        <div className="vc-said rise" role={voice && !voice.needsKey ? 'alert' : 'status'}>
           <div className="vc-said-top">
-            <span className="vc-label">{recording ? 'Listening' : busy ? 'One moment' : clip ? 'Recording ready' : 'Voice'}</span>
+            <span className="vc-label">
+              {recording ? 'Listening' : busy ? 'One moment' : clip ? 'Recording ready' : voice && !voice.needsKey ? 'Voice' : 'Log by voice'}
+            </span>
             {busy ? (
               <button type="button" className="vc-rerecord" onClick={cancelVoice}>
                 Cancel
@@ -295,10 +303,18 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
             {recorder.status === 'requesting'
               ? 'Waiting for the microphone…'
               : recording
-                ? 'Say what you did, then tap the tick.'
+                ? 'Say what you did, then tap Done.'
                 : filling
                   ? 'Filling in the form…'
-                  : (voice?.text ?? 'Your recording goes to Google Gemini to fill in the form.')}
+                  : voice?.needsKey
+                    ? linkSettings(voice.text, onOpenSettings)
+                    : voice
+                      ? voice.text
+                      : clip
+                        ? 'Your recording goes to Google Gemini to fill in the form.'
+                        : apiKey.trim()
+                          ? 'Tap Speak and say what you did, like “30 minute run, 5 k, felt good”. Or fill in the form below.'
+                          : linkSettings(NEEDS_KEY, onOpenSettings)}
           </p>
           {clip && !busy && (
             <div className="vc-actions">
@@ -517,10 +533,12 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
         )}
       </div>
 
-      {/* One quiet line: how voice works to begin with, then what's still needed to save. */}
-      <p className="log-hint log-status" role="status">
-        {!dirty ? 'Fill it in, or tap the mic and say what you did.' : needs ? `Still needed: ${needs}.` : 'Ready to save.'}
-      </p>
+      {/* One quiet line, once there's something on the form: what's still needed to save. */}
+      {dirty && (
+        <p className="log-hint log-status" role="status">
+          {needs ? `Still needed: ${needs}.` : 'Ready to save.'}
+        </p>
+      )}
 
       <div style={{ flex: 1 }} />
 
@@ -591,6 +609,24 @@ function Log({ timeFormat = '12', apiKey, onSave, onDone, registerMic }) {
         />
       )}
     </section>
+  )
+}
+
+/**
+ * A message that mentions Settings, with that word made into the way there.
+ * The form and any recording stay as they are while Settings is open.
+ */
+function linkSettings(text, onOpen) {
+  const [before, ...rest] = text.split('Settings')
+  if (!rest.length) return text
+  return (
+    <>
+      {before}
+      <button type="button" className="vc-link" onClick={onOpen}>
+        Settings
+      </button>
+      {rest.join('Settings')}
+    </>
   )
 }
 

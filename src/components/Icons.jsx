@@ -1,6 +1,6 @@
 import {
   CalendarDays, ChartNoAxesColumn, Check, ChevronLeft as LChevronLeft, ChevronRight as LChevronRight,
-  CircleGauge, Clock, Dumbbell, Flame, House, Layers, List, Mic, Moon, Plus, Repeat, Route, Settings, Sun, X,
+  CircleGauge, Clock, Dumbbell, Flame, House, KeyRound, Layers, List, Mic, Moon, Plus, Repeat, Route, Settings, Sun, X,
 } from 'lucide-react'
 import runUrl from '../assets/workout-icons/running.png'
 import liftUrl from '../assets/workout-icons/weightlift.png'
@@ -39,6 +39,7 @@ export const SetsIcon = wrap(Layers)
 export const RepsIcon = wrap(Repeat)
 export const DistanceIcon = wrap(Route)
 export const PaceIcon = wrap(CircleGauge)
+export const KeyIcon = wrap(KeyRound)
 
 /* ---------- workout types ---------- */
 

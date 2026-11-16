@@ -75,7 +75,6 @@
 .nav-log.is-listening {
   background: var(--accent);
   color: var(--accent-ink);
-  animation: breathe 1.6s ease-in-out infinite;
 }
 
 .nav-log.is-disabled {
@@ -84,17 +83,27 @@
   box-shadow: inset 0 0 0 1.5px var(--accent);
 }
 
-@keyframes breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.06);
-  }
-}
-
 .nav-log > svg {
   width: 22px;
   height: 22px;
+}
+
+/* On the Log form: the icon with its word under it, like the tabs beside it. */
+.nav-log.has-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.nav-log.has-label > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-log-label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
 }

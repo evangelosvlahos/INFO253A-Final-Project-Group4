@@ -111,14 +111,6 @@
   stroke-width: 2.25;
 }
 
-.saved-sub {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--ink-2);
-}
-
-
 /* --- voice card, and the actions under the form --- */
 
 .vc-said {
@@ -155,11 +147,18 @@
 .vc-quote {
   margin: 0;
   font-size: 14px;
-  font-style: italic;
   line-height: 1.5;
   color: var(--ink-2);
 }
 
+/* A word in the message that takes you somewhere: the accent, underlined, in the line's own type. */
+.vc-link {
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
 
 .vc-add {
   align-self: flex-start;

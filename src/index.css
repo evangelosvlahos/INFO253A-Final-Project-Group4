@@ -151,6 +151,15 @@ a:focus-visible,
   flex-direction: column;
 }
 
+/* A screen kept in place while another is shown over it: no box of its own, or none at all. */
+.screen-keep {
+  display: contents;
+}
+
+.screen-keep[hidden] {
+  display: none;
+}
+
 /* The top of a screen: its title, and any control that belongs beside it. */
 .home-head {
   display: flex;

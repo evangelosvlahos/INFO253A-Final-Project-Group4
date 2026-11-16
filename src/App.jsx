@@ -5,9 +5,10 @@ import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
 
 import { useState, useEffect } from 'react'
 import WorkoutList from './components/WorkoutList.jsx'
-import WorkoutForm from './components/WorkoutForm.jsx'
+import Log from './components/Log.jsx'
 import Settings from './components/Settings.jsx'
 import Stats from './components/Stats.jsx'
+import { ENV_API_KEY } from './services/gemini.jsx'
 import { isValidTime } from './utils/time.jsx'
 
 /**
@@ -28,6 +29,8 @@ import { isValidTime } from './utils/time.jsx'
  * @typedef {BaseWorkout & (
  *   { type: 'running', data: { distanceKm: number } } |
  *   { type: 'lifting', data: { exercises: WorkoutExercise[] } } |
+ *   { type: 'yoga', data: Record<string, never> } |
+ *   { type: 'walking', data: { distanceKm?: number } } |
  *   { type: 'other', data: Record<string, never> }
  * )} Workout
  */
@@ -76,14 +79,15 @@ const sampleWorkouts = [
     durationMinutes: 20,
     feeling: 5,
     notes: 'A short stretch after class.',
-    type: 'other',
+    type: 'yoga',
     data: {},
   },
 ]
 
 function App() {
   const [activeView, setActiveView] = useState('home');
-  const [isLogging, setIsLogging] = useState(false)
+  // What the nav's round button does while the Log screen is open.
+  const [mic, setMic] = useState(null)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [apiKey, setApiKey] = useState('')
   const [preferences, setPreferences] = useState(() => {
@@ -140,7 +144,6 @@ function App() {
   function handleSaveWorkout(entry) {
     const workout = { ...entry, id: crypto.randomUUID() }
     setWorkouts(previous => [workout, ...previous])
-    setIsLogging(false)
   }
 
   function goTo(view) {
@@ -150,42 +153,59 @@ function App() {
 
   const isDark = preferences.theme === 'dark'
 
+  // Theme and settings. Each screen places them at the right end of its title row.
+  const tools = (
+    <div className="head-tools">
+      {/* One tap flips the theme; the icon shows the theme it will switch to. */}
+      <button
+        className="icon-btn"
+        type="button"
+        aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+        onClick={() => setPreferences(previous => ({ ...previous, theme: isDark ? 'light' : 'dark' }))}
+      >
+        {isDark ? <SunIcon /> : <MoonIcon />}
+      </button>
+      <button className="icon-btn" type="button" aria-label="Settings" aria-haspopup="dialog" onClick={() => setIsSettingsOpen(true)}>
+        <SettingsIcon />
+      </button>
+    </div>
+  )
+
   return (
     <div className="app">
       <div className="frame">
-        <div className="frame-tools">
-          {/* One tap flips the theme; the icon shows the theme it will switch to. */}
-          <button
-            className="icon-btn"
-            type="button"
-            aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-            onClick={() => setPreferences(previous => ({ ...previous, theme: isDark ? 'light' : 'dark' }))}
-          >
-            {isDark ? <SunIcon /> : <MoonIcon />}
-          </button>
-          <button className="icon-btn" type="button" aria-label="Settings" aria-haspopup="dialog" onClick={() => setIsSettingsOpen(true)}>
-            <SettingsIcon />
-          </button>
-        </div>
         {activeView === 'home' && (
           <Home
             workouts={workouts}
             timeFormat={preferences.timeFormat}
+            tools={tools}
             // Opening a single workout arrives with the workout screen.
             onOpen={() => {}}
             onAll={() => goTo('workouts')}
           />
         )}
         {activeView === 'workouts' && (
-          <main className="container" id="workouts">
-            <h1>Workouts</h1>
+          <main className="screen" id="workouts">
+            <header className="home-head">
+              <h1 className="home-title">Workouts</h1>
+              <div className="head-actions">{tools}</div>
+            </header>
             <WorkoutList workouts={workouts} timeFormat={preferences.timeFormat} />
           </main>
         )}
-        {activeView === 'stats' && <Stats workouts={workouts} />}
-        <Nav tab={activeView} onChange={goTo} onLog={() => setIsLogging(true)} />
+        {activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
+        {activeView === 'log' && (
+          <Log
+            timeFormat={preferences.timeFormat}
+            // The key typed in Settings comes first; .env.local is the fallback for local development.
+            apiKey={apiKey.trim() || ENV_API_KEY}
+            onSave={handleSaveWorkout}
+            onDone={() => goTo('home')}
+            registerMic={setMic}
+          />
+        )}
+        <Nav tab={activeView} onChange={goTo} mic={mic} />
       </div>
-      {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} apiKey={apiKey} onOpenSettings={() => setIsSettingsOpen(true)} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
       {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>
   )

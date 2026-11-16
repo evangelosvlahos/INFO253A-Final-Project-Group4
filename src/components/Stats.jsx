@@ -7,7 +7,7 @@ const PERIODS = ['1M', '3M', 'All']
 const PERIOD_DAYS = { '1M': 30, '3M': 90 }
 
 /** The dashboard: how often, how long, and how the lifts and distance are going. */
-function Stats({ workouts }) {
+function Stats({ workouts, tools }) {
   const [period, setPeriod] = useState('1M')
   const stats = useMemo(() => compute(workouts, period), [workouts, period])
 
@@ -16,6 +16,7 @@ function Stats({ workouts }) {
       <main className="screen" id="stats">
         <header className="home-head">
           <h1 className="home-title">Stats</h1>
+          <div className="head-actions">{tools}</div>
         </header>
         <EmptyState
           title="Not enough to show yet"
@@ -37,12 +38,15 @@ function Stats({ workouts }) {
     <main className="screen" id="stats">
       <header className="home-head">
         <h1 className="home-title">Stats</h1>
-        <div className="period-toggle" role="group" aria-label="Period">
-          {PERIODS.map(option => (
-            <button key={option} type="button" aria-pressed={period === option} onClick={() => setPeriod(option)}>
-              {option}
-            </button>
-          ))}
+        <div className="head-actions">
+          <div className="period-toggle" role="group" aria-label="Period">
+            {PERIODS.map(option => (
+              <button key={option} type="button" aria-pressed={period === option} onClick={() => setPeriod(option)}>
+                {option}
+              </button>
+            ))}
+          </div>
+          {tools}
         </div>
       </header>
 

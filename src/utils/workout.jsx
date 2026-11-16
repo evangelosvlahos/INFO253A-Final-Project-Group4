@@ -5,6 +5,11 @@ import { fmtMinutes } from './dates.jsx'
 /** How it felt, 1 to 5. */
 export const FEEL_LABELS = { 1: 'Drained', 2: 'Heavy', 3: 'Steady', 4: 'Good', 5: 'Strong' }
 
+export const ALL_FEELS = [1, 2, 3, 4, 5]
+
+/** "1 point", "4 points" */
+export const points = feeling => `${feeling} ${feeling === 1 ? 'point' : 'points'}`
+
 export const TYPE_LABELS = { running: 'Run', lifting: 'Lift', yoga: 'Yoga', walking: 'Walk', other: 'Other' }
 
 /** The exercises of a lifting workout; none for any other type. */
@@ -32,7 +37,8 @@ export function fmtPace(durationMinutes, km) {
 /**
  * The headline numbers, which depend on what kind of workout it was:
  * lifting shows sets and reps, a run shows distance and pace,
- * anything else (yoga) shows how it felt.
+ * anything else (yoga) shows only how long it took.
+ * How it felt is said beside the flames, so it isn't repeated here.
  */
 export function statsOf(workout) {
   const stats = [{ k: 'Duration', v: fmtMinutes(workout.durationMinutes) }]
@@ -45,7 +51,6 @@ export function statsOf(workout) {
     if (sets) stats.push({ k: 'Sets', v: String(sets) })
     if (reps) stats.push({ k: 'Reps', v: String(reps) })
   }
-  if (stats.length < 3) stats.push({ k: 'Felt', v: FEEL_LABELS[workout.feeling] })
   return stats.slice(0, 3)
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  MONTHS, MONTHS_LONG, WEEKDAYS, addDays, daysInMonth, fmtDayShort, fmtDayTitle,
+  MONTHS, MONTHS_LONG, WEEKDAYS, addDays, daysInMonth, fmtDayShort, fmtDayTitle, fmtDayTitleShort,
   fmtMinutes, fmtMonthDay, fmtShort, fromISODate, startOfMonth, startOfWeek, today, toISODate,
 } from '../utils/dates.jsx'
 import { addMinutes, formatShortTime, formatWorkoutTime } from '../utils/time.jsx'
@@ -11,7 +11,7 @@ import { FeelScore, WorkoutStats } from './WorkoutStats.jsx'
 import './Home.css'
 
 /** Today's workouts, or any day's through the calendar. */
-function Home({ workouts, timeFormat, onOpen, onAll }) {
+function Home({ workouts, timeFormat, tools, onOpen, onAll }) {
   const now = today()
   const [view, setView] = useState('list')
   const [picked, setPicked] = useState(now)
@@ -46,7 +46,11 @@ function Home({ workouts, timeFormat, onOpen, onAll }) {
     <main className="screen home" id="home">
       <header className="home-head">
         {view === 'list' ? (
-          <h1 className="home-title">{fmtDayTitle(day)}</h1>
+          <h1 className="home-title">
+            {/* On a phone the weekday is shortened, so the title and the controls share one row. */}
+            <span className="title-long">{fmtDayTitle(day)}</span>
+            <span className="title-short">{fmtDayTitleShort(day)}</span>
+          </h1>
         ) : (
           <h1 className="home-title">
             <button
@@ -56,18 +60,23 @@ function Home({ workouts, timeFormat, onOpen, onAll }) {
               aria-haspopup="dialog"
               aria-label={`${fmtMonthDay(day)}, ${date.getFullYear()}. Choose a date`}
             >
-              {fmtMonthDay(day)}, <span className="yr">{date.getFullYear()}</span>
+              {fmtMonthDay(day)}
+              {/* The year drops away on a phone; the month sheet this opens shows it. */}
+              <span className="title-year">, <span className="yr">{date.getFullYear()}</span></span>
               <ChevronRight />
             </button>
           </h1>
         )}
-        <div className="view-toggle" role="tablist" aria-label="View">
-          <button type="button" role="tab" aria-label="Today" title="Today" aria-selected={view === 'list'} onClick={() => setView('list')}>
-            <MenuIcon />
-          </button>
-          <button type="button" role="tab" aria-label="Calendar" title="Calendar" aria-selected={view === 'calendar'} onClick={() => setView('calendar')}>
-            <CalendarIcon />
-          </button>
+        <div className="head-actions">
+          <div className="view-toggle" role="tablist" aria-label="View">
+            <button type="button" role="tab" aria-label="Today" title="Today" aria-selected={view === 'list'} onClick={() => setView('list')}>
+              <MenuIcon />
+            </button>
+            <button type="button" role="tab" aria-label="Calendar" title="Calendar" aria-selected={view === 'calendar'} onClick={() => setView('calendar')}>
+              <CalendarIcon />
+            </button>
+          </div>
+          {tools}
         </div>
       </header>
 

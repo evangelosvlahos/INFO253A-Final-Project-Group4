@@ -64,6 +64,11 @@ export function fmtDayTitle(value) {
   return `${WEEKDAYS_LONG[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()}`
 }
 
+/** "Fri, Nov 13": the same title where there isn't room for the whole weekday. */
+export function fmtDayTitleShort(value) {
+  return `${WEEKDAYS[fromISODate(value).getDay()]}, ${fmtMonthDay(value)}`
+}
+
 /** "Nov 13" */
 export function fmtMonthDay(value) {
   const date = fromISODate(value)
@@ -76,6 +81,12 @@ export function fmtDayShort(value) {
   if (count === 0) return 'Today'
   if (count > 0 && count < 7) return WEEKDAYS[fromISODate(value).getDay()]
   return fmtMonthDay(value)
+}
+
+/** "Today", "Yesterday", "3 days ago". */
+export function daysAgo(value) {
+  const count = daysBetween(value, today())
+  return count <= 0 ? 'Today' : count === 1 ? 'Yesterday' : `${count} days ago`
 }
 
 /** "48 min", "1h 15m" */

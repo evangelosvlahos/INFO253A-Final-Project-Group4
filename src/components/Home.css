@@ -136,6 +136,11 @@
   text-align: right;
 }
 
+/* A stat on its own stays on the left. */
+.day-stats > span:only-child {
+  text-align: left;
+}
+
 .day-stats .k {
   font-size: 15px;
   font-weight: 600;
@@ -149,7 +154,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* How it felt: two overlapping flames and the score, both in the accent. */
+/* How it felt: two overlapping flames and the feeling in words, both in the accent. */
 .feel-score {
   flex-shrink: 0;
   display: inline-flex;

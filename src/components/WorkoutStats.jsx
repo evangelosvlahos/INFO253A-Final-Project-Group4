@@ -17,27 +17,32 @@ export function WorkoutStats({ workout }) {
 }
 
 /**
- * How it felt: overlapping flames with the 1–5 score beside them.
- * With `explain`, tapping (or hovering) it says what the number means.
+ * How it felt: overlapping flames with the feeling in words beside them ("Felt good").
+ * With `explain`, it shows the 1–5 score instead, and tapping (or hovering) says what the number means.
  */
 export function FeelScore({ workout, explain = false }) {
   const [open, setOpen] = useState(false)
   const tipId = useId()
   const felt = FEEL_LABELS[workout.feeling].toLowerCase()
+  const flames = (
+    <span className="flames" aria-hidden="true">
+      <Flame className="back" strokeWidth={2} />
+      <Flame className="front" strokeWidth={2} />
+    </span>
+  )
   const score = (
     <>
-      <span className="flames" aria-hidden="true">
-        <Flame className="back" strokeWidth={2} />
-        <Flame className="front" strokeWidth={2} />
-      </span>
+      {flames}
       <span className="n" aria-hidden="true">{workout.feeling}</span>
     </>
   )
 
+  // At a glance the word says more than the number: "Felt good", not "4".
   if (!explain) {
     return (
-      <span className="feel-score" role="img" aria-label={`Felt ${felt}, ${workout.feeling} of 5`} title={`Felt ${felt}`}>
-        {score}
+      <span className="feel-score" role="img" aria-label={`Felt ${felt}, ${workout.feeling} of 5`}>
+        {flames}
+        <span className="n" aria-hidden="true">Felt {felt}</span>
       </span>
     )
   }

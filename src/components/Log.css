@@ -1,0 +1,199 @@
+/* Log a workout: the form, the voice card above it, and the saved confirmation. */
+
+.log-hint {
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* The log form borrows the edit screen: title, description, grouped rows, set tables.
+   What follows is only what a blank form adds to it. */
+
+/* Type: the same segmented control as the Workouts filter. Picking one opens the rows. */
+.log-kind {
+  align-self: flex-start;
+  max-width: 100%;
+  margin-top: 18px;
+}
+
+.log-kind button {
+  white-space: nowrap;
+}
+
+/* The form stays on screen while voice is at work, dimmed because it can't be typed into. */
+.log-fields {
+  display: flex;
+  flex-direction: column;
+  transition: opacity 200ms var(--ease);
+}
+
+.log-fields.is-busy {
+  opacity: 0.45;
+}
+
+/* Save waits until the form is complete. */
+.edit-save[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* What was said sits above the form it filled in. */
+.edit > .vc-said {
+  margin: 0 0 22px;
+}
+
+/* A row that hasn't been answered yet reads as a prompt, not a value. */
+.prop .k.is-empty,
+.prop .prop-time.is-empty {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+/* The exercise name is typed straight into the table's caption. */
+.log-ex-name {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  caret-color: var(--accent);
+}
+
+/* Under each table: add a set, or take one out. */
+.log-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 12px;
+}
+
+.log-add-exercise {
+  margin-top: 22px;
+}
+
+.log-status {
+  margin-top: 22px;
+}
+
+/* Saved: a tick in the accent ring, then back to Home. */
+.saved {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.saved-mark {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--paper-2);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.saved-mark svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.25;
+}
+
+.saved-sub {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+
+/* --- voice card, and the actions under the form --- */
+
+.vc-said {
+  margin-top: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.vc-said-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.vc-rerecord {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.vc-rerecord svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vc-quote {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+
+.vc-add {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.vc-add svg {
+  width: 15px;
+  height: 15px;
+}
+
+.vc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 20px;
+}
+
+.vc-save {
+  width: 100%;
+  height: 56px;
+  border-radius: 28px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.vc-save[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.vc-discard {
+  width: 100%;
+  height: 48px;
+  border-radius: 24px;
+  font-size: 14px;
+  color: var(--ink-2);
+}

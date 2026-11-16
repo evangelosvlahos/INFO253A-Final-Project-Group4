@@ -141,16 +141,6 @@ a:focus-visible,
   position: relative;
 }
 
-/* Theme and settings, in the top corner of every screen. */
-.frame-tools {
-  position: absolute;
-  top: 8px;
-  right: calc(var(--gutter) - 10px);
-  display: flex;
-  gap: 2px;
-  z-index: 5;
-}
-
 /* ---------- screens ---------- */
 
 /* A screen fills the frame and leaves room for the nav below. */
@@ -170,6 +160,59 @@ a:focus-visible,
   padding: 56px 0 28px;
 }
 
+/* The right end of that row: the screen's own control, then theme and settings. */
+.head-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pulled out by the buttons' own inset, so the last icon lines up with the edge of the column. */
+.head-tools {
+  display: flex;
+  margin-right: -9px;
+}
+
+.head-tools .icon-btn {
+  width: 36px;
+  height: 36px;
+}
+
+.head-tools .icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* A title with a shorter wording for phones, where the row is tight. */
+.title-short {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .title-long,
+  .title-year {
+    display: none;
+  }
+
+  .title-short {
+    display: inline;
+  }
+
+  .home-head {
+    gap: 8px;
+  }
+
+  .head-tools .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .head-tools {
+    margin-right: -7px;
+  }
+}
+
 .home-title {
   font-family: var(--font-display);
   font-size: 25px;
@@ -182,7 +225,8 @@ a:focus-visible,
 
 /* The one small-caps label, wherever it appears. */
 .eyebrow,
-.st-eyebrow {
+.st-eyebrow,
+.vc-label {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.12em;

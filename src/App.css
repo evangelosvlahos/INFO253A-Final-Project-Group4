@@ -1,4 +1,4 @@
-/* Styles for the workout list, the log form and the settings dialog.
+/* Styles for the workout list and the settings dialog.
    The page frame, nav and shared pieces are in index.css and beside each component. */
 
 /* The names these styles already use, pointed at the design tokens in index.css.
@@ -221,40 +221,7 @@ button.cross:hover {
   gap: 8px;
 }
 
-.form-error {
-  color: var(--danger);
-}
-
-.workout-fields {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.voice-input {
-  display: grid;
-  gap: 8px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.voice-input audio {
-  width: 100%;
-}
-
-.voice-input p {
-  margin: 0;
-}
-
 .workout-form button:disabled {
   cursor: default;
   opacity: 0.6;
-}
-
-.time-input {
-  margin: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
 }

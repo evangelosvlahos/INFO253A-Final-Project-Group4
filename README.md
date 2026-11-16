@@ -19,7 +19,8 @@ The bottom bar has **Home**, **Workouts**, **Stats** and a round **+** button.
 - **Home** shows today's workouts and earlier ones. The toggle in the title row
   switches to a month calendar with a marker on each day that has a workout;
   select a day to see its workouts.
-- **Workouts** lists every workout by month, newest first, with a filter by type.
+- **Workouts** lists every workout by month, newest first. Narrow it by period
+  (this week, last week, or a month) and by type.
 - **Stats** is the summary dashboard: workouts per week, the current weekly
   streak, lifting volume and top sets, for the chosen period.
 - **+** opens **Log workout**. Fill in the form, or log by voice (see below).

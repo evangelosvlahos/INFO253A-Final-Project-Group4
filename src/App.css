@@ -1,9 +1,5 @@
-/* Paste your Assignment 1 styles.css here. Keep the icons in src/assets/ so url(assets/...) paths keep working. */
-/* This is your CSS files */
-* {
-  font-size: 14px;
-  line-height: 1.5;
-}
+/* Styles for the workout list, the log form and the settings dialog.
+   The page frame, nav and shared pieces are in index.css and beside each component. */
 
 /* The names these styles already use, pointed at the design tokens in index.css.
    The tokens change with the theme, so one set covers dark and light. */
@@ -12,148 +8,21 @@
   --page-bg: var(--paper);
   --surface: var(--paper-2);
   --text: var(--ink);
-  --sidebar-bg: var(--paper-2);
   --muted: var(--ink-2);
   --border: var(--paper-3);
   --control-bg: var(--paper);
   --button-bg: var(--paper-3);
   --accent-hover: var(--ink);
-  --hover-bg: var(--paper-3);
-  --hover-text: var(--ink);
-  --today-bg: var(--paper-3);
-  --weekend: var(--ink-2);
   --danger: var(--ink);
-}
-
-body {
-  background: var(--page-bg);
-  color: var(--text);
 }
 
 h1{
   font-size: 20px;
 }
 
-/* header stuffs */
-.site-header {
-  display: flex;
-  background-color: var(--surface);
-  color: var(--text);
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
-  padding: 10px;
-  padding-left: 30px;
-}
-
-.site-header img {
-  object-fit: contain; /* do not stretch the icon */
-}
-
-.search-box {
-  margin-left: 30px; /*some spacing from the hamburger */
-  padding: 5px;
-  background-color: rgba(255,255,255,0.25);
-  width: 200px;
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-}
-
-.search-box * {
-  vertical-align: middle;
-}
-.search-box img {
-  margin-right: 10px;
-}
-
-.search-box input {
-  display: inline-block;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  flex: 1;
-  min-width: 0;
-}
-
-.search-box input::placeholder { /* select into the placeholder */
-  color: rgba(255, 255, 255, 0.75);
-}
-
-
-/* Push Settings to the right. */
-.iampadding {
-  flex-grow: 1;
-}
-
-.container-wrapper {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: row;
-  flex-grow: 1;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  color: var(--text);
-  background: var(--page-bg);
-  min-height: 100vh;
-  margin: 0;
-  padding: 5px;
-  /* background-color: #0a58ca; */
-  box-sizing: border-box; /* use this so it doesn't scroll under padding*/
-}
-
-/*navigation stuffs */
-.nav {
-  padding: 10px;
-  /* display: flex; */
-  /* flex-direction: column; */
-  width: 300px;
-  background-color: var(--sidebar-bg);
-  box-sizing: border-box;
-  /* position: fixed; */
-}
-
-.nav ul {
-  width: 100%;
-  padding: 0;
-}
-
-.nav li {
-  list-style: none;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-
-.nav li a {
-  display: inline-block;
-  padding: 8px 20px;
-  box-sizing: border-box; /* make it inward such that hover does not highlight outside */
-  line-height: 1.5;
-  width: 100%;
-  text-decoration: none;
-  color: var(--text);
-}
-
-.nav a img {
-  vertical-align: middle;
-}
-.nav a .count {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.nav a:hover {
-  background: var(--hover-bg);
-  color: var(--hover-text);
-}
-
+/* A screen that hasn't moved to the new layout yet: same column, room for the nav below. */
 .container {
-  padding: 24px;
+  padding: 56px var(--gutter) calc(var(--nav-h) + 24px);
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -262,7 +131,6 @@ button.cross:hover {
   color: var(--accent);
 }
 
-.log-workout-button,
 .workout-form .save-workout-button {
   border: 1px solid var(--accent);
   border-radius: var(--radius);
@@ -272,17 +140,8 @@ button.cross:hover {
   cursor: pointer;
 }
 
-.nav > .log-workout-button {
-  width: 100%;
-}
-
-.log-workout-button:hover,
 .workout-form .save-workout-button:hover {
   background: var(--accent-hover);
-}
-
-.mobile-log-button {
-  display: none;
 }
 
 .workout-dialog {
@@ -366,17 +225,6 @@ button.cross:hover {
   color: var(--danger);
 }
 
-.header-settings-button {
-  align-self: center;
-  margin-right: 12px;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-}
-
 .workout-fields {
   display: grid;
   gap: 12px;
@@ -400,33 +248,6 @@ button.cross:hover {
   margin: 0;
 }
 
-/* A round icon button, used for the theme switch in the header. */
-.icon-btn {
-  display: grid;
-  place-items: center;
-  align-self: center;
-  width: 40px;
-  height: 40px;
-  margin-right: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: none;
-  color: var(--ink-2);
-  cursor: pointer;
-  transition: background 120ms var(--ease), color 120ms var(--ease);
-}
-
-.icon-btn:hover {
-  background: var(--paper-3);
-  color: var(--ink);
-}
-
-.icon-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
 .workout-form button:disabled {
   cursor: default;
   opacity: 0.6;
@@ -436,30 +257,4 @@ button.cross:hover {
   margin: 0;
   padding: 8px 12px;
   border: 1px solid var(--border);
-}
-
-@media (max-width: 480px) {
-  .nav {
-      display: none;
-  }
-
-  .search-box {
-    display: none;
-  }
-
-  .site-header {
-    align-items: center;
-    gap: 10px;
-    padding-left: 12px;
-  }
-
-  .mobile-log-button {
-    display: inline-block;
-    background: var(--surface);
-    color: var(--text);
-  }
-
-  .mobile-log-button:hover {
-    background: var(--hover-bg);
-  }
 }

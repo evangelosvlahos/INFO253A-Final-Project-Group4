@@ -1,12 +1,10 @@
 import './App.css'
-import Header from './components/Header.jsx'
 import Home from './components/Home.jsx'
-import inboxIcon from './assets/inbox_icon.png'
-import calendarIcon from './assets/calendar_icon.png'
-import upcomingIcon from './assets/upcoming_icon.png'
+import Nav from './components/Nav.jsx'
+import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
 
 import { useState, useEffect } from 'react'
-import WorkoutCalendar from './components/WorkoutCalendar.jsx'
+import WorkoutList from './components/WorkoutList.jsx'
 import WorkoutForm from './components/WorkoutForm.jsx'
 import Settings from './components/Settings.jsx'
 import Stats from './components/Stats.jsx'
@@ -145,26 +143,47 @@ function App() {
     setIsLogging(false)
   }
 
+  function goTo(view) {
+    setActiveView(view)
+    window.scrollTo(0, 0)
+  }
+
+  const isDark = preferences.theme === 'dark'
+
   return (
     <div className="app">
-      <Header
-        theme={preferences.theme}
-        onToggleTheme={() => setPreferences(previous => ({ ...previous, theme: previous.theme === 'dark' ? 'light' : 'dark' }))}
-        onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
-      <div className="container-wrapper">
-        <nav className="nav" aria-label="Main navigation">
-          <button className="log-workout-button" type="button" onClick={() => setIsLogging(true)} aria-haspopup="dialog">
-            + Log workout
+      <div className="frame">
+        <div className="frame-tools">
+          {/* One tap flips the theme; the icon shows the theme it will switch to. */}
+          <button
+            className="icon-btn"
+            type="button"
+            aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+            onClick={() => setPreferences(previous => ({ ...previous, theme: isDark ? 'light' : 'dark' }))}
+          >
+            {isDark ? <SunIcon /> : <MoonIcon />}
           </button>
-          <ul className="nav-list">
-            <li><a href="#home" onClick={() => setActiveView('home')}><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
-            <li><a href="#calendar" onClick={() => setActiveView('calendar')}><img src={calendarIcon} alt="" /> Calendar <span className="count">{workouts.length}</span></a></li>
-            <li><a href="#stats" onClick={() => setActiveView('stats')}><img src={upcomingIcon} alt="" /> Dashboard</a></li>
-          </ul>
-        </nav>
-        {activeView === 'home' && <Home workouts={workouts} timeFormat={preferences.timeFormat} />}
-        {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} timeFormat={preferences.timeFormat} />}
+          <button className="icon-btn" type="button" aria-label="Settings" aria-haspopup="dialog" onClick={() => setIsSettingsOpen(true)}>
+            <SettingsIcon />
+          </button>
+        </div>
+        {activeView === 'home' && (
+          <Home
+            workouts={workouts}
+            timeFormat={preferences.timeFormat}
+            // Opening a single workout arrives with the workout screen.
+            onOpen={() => {}}
+            onAll={() => goTo('workouts')}
+          />
+        )}
+        {activeView === 'workouts' && (
+          <main className="container" id="workouts">
+            <h1>Workouts</h1>
+            <WorkoutList workouts={workouts} timeFormat={preferences.timeFormat} />
+          </main>
+        )}
         {activeView === 'stats' && <Stats workouts={workouts} />}
+        <Nav tab={activeView} onChange={goTo} onLog={() => setIsLogging(true)} />
       </div>
       {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} apiKey={apiKey} onOpenSettings={() => setIsSettingsOpen(true)} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
       {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}

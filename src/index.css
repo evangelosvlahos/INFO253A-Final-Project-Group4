@@ -26,6 +26,10 @@
   --gutter: 28px;
   --radius-card: 18px;
   --frame: 430px;
+  /* The floating nav never grows past phone width. */
+  --nav-w: 430px;
+  /* Floating nav: 66px bar + 20px off the bottom edge. */
+  --nav-h: 86px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -69,19 +73,38 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
 }
 
 button,
 input,
 textarea,
 select {
-  font-family: inherit;
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:focus-visible,
@@ -99,16 +122,41 @@ a:focus-visible,
   color: var(--paper);
 }
 
-/* ---------- screens ---------- */
+/* ---------- frame ---------- */
 
-/* One column, as wide as the frame allows. */
-.screen {
-  flex: 1;
-  min-width: 0;
+/* The page: one centred column, with the nav floating over its foot. */
+.app {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--paper);
+}
+
+.frame {
   width: 100%;
   max-width: var(--frame);
-  margin: 0 auto;
-  padding: 0 var(--gutter) 24px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Theme and settings, in the top corner of every screen. */
+.frame-tools {
+  position: absolute;
+  top: 8px;
+  right: calc(var(--gutter) - 10px);
+  display: flex;
+  gap: 2px;
+  z-index: 5;
+}
+
+/* ---------- screens ---------- */
+
+/* A screen fills the frame and leaves room for the nav below. */
+.screen {
+  flex: 1;
+  padding: 0 var(--gutter) calc(var(--nav-h) + 24px);
   display: flex;
   flex-direction: column;
 }
@@ -143,6 +191,37 @@ a:focus-visible,
 }
 
 /* ---------- controls ---------- */
+
+/* A round button holding one icon. */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Activity figure: a mask filled with the current text colour. */
+.glyph {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  mask: center / contain no-repeat;
+  -webkit-mask: center / contain no-repeat;
+}
 
 /* A segmented choice: a few short options, one of them picked. */
 .period-toggle {

@@ -33,3 +33,55 @@ export function startOfWeek(value) {
   date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
   return toISODate(date)
 }
+
+export function startOfMonth(value) {
+  const date = fromISODate(value)
+  return toISODate(new Date(date.getFullYear(), date.getMonth(), 1))
+}
+
+export function daysInMonth(value) {
+  const date = fromISODate(value)
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+}
+
+export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+export const MONTHS_LONG = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+export const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEKDAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+/** "Fri 13 Nov" */
+export function fmtShort(value) {
+  const date = fromISODate(value)
+  return `${WEEKDAYS[date.getDay()]} ${date.getDate()} ${MONTHS[date.getMonth()]}`
+}
+
+/** "Friday, Nov 13" */
+export function fmtDayTitle(value) {
+  const date = fromISODate(value)
+  return `${WEEKDAYS_LONG[date.getDay()]}, ${MONTHS[date.getMonth()]} ${date.getDate()}`
+}
+
+/** "Nov 13" */
+export function fmtMonthDay(value) {
+  const date = fromISODate(value)
+  return `${MONTHS[date.getMonth()]} ${date.getDate()}`
+}
+
+/** "Wed" inside the last week, "Nov 4" before that. */
+export function fmtDayShort(value) {
+  const count = daysBetween(value, today())
+  if (count === 0) return 'Today'
+  if (count > 0 && count < 7) return WEEKDAYS[fromISODate(value).getDay()]
+  return fmtMonthDay(value)
+}
+
+/** "48 min", "1h 15m" */
+export function fmtMinutes(minutes) {
+  if (minutes < 60) return `${minutes} min`
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+  return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`
+}

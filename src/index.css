@@ -98,3 +98,128 @@ a:focus-visible,
   background: var(--ink);
   color: var(--paper);
 }
+
+/* ---------- screens ---------- */
+
+/* One column, as wide as the frame allows. */
+.screen {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: var(--frame);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The top of a screen: its title, and any control that belongs beside it. */
+.home-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 56px 0 28px;
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* The one small-caps label, wherever it appears. */
+.eyebrow,
+.st-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ---------- controls ---------- */
+
+/* A segmented choice: a few short options, one of them picked. */
+.period-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.period-toggle button {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+}
+
+.period-toggle button[aria-pressed="true"] {
+  background: var(--paper-3);
+  color: var(--ink);
+}
+
+/* ---------- surfaces ---------- */
+
+/* The one card: raised surface, hairline border. Also used for empty states. */
+.panel {
+  padding: 20px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.panel-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* ---------- animation ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 220ms var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

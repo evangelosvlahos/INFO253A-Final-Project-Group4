@@ -1,0 +1,162 @@
+/* Stats dashboard. */
+
+.st-body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.st-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.st-eyebrow {
+  margin: 0;
+}
+
+.st-card {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+}
+
+.st-card-title {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* --- workouts per week: one bar a week --- */
+
+.st-bars {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.st-bar {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.st-bar-n,
+.st-bar-d {
+  font-size: 11px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.st-bar-d {
+  font-size: 10px;
+  width: 100%;
+  min-height: 15px;
+  padding-top: 2px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  /* Labels may overflow their slot a little; never wrap or clip. */
+  overflow: visible;
+}
+
+.st-bar-track {
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.st-bar-track i {
+  display: block;
+  width: 100%;
+  border-radius: 4px 4px 2px 2px;
+  background: var(--accent);
+}
+
+/* --- three small totals --- */
+
+.st-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.st-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.st-tile-k {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.st-tile-v {
+  font-size: 13px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- strength: rows in one card --- */
+
+.st-card-list {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.st-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.st-row:last-child {
+  border-bottom: 0;
+}
+
+.st-row-head,
+.st-row-foot {
+  padding: 14px 0;
+}
+
+.st-sub {
+  padding: 14px 0 2px;
+}
+
+.st-row-k {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.st-row-v {
+  font-size: 13px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Personal record. */
+.st-pr {
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}

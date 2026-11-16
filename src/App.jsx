@@ -4,9 +4,11 @@ import Home from './components/Home.jsx'
 import inboxIcon from './assets/inbox_icon.png'
 import calendarIcon from './assets/calendar_icon.png'
 import upcomingIcon from './assets/upcoming_icon.png'
+import checkIcon from './assets/check_icon.png'
 
 import { useState, useEffect } from 'react'
 import WorkoutCalendar from './components/WorkoutCalendar.jsx'
+import WorkoutHistory from './components/WorkoutHistory.jsx'
 import WorkoutForm from './components/WorkoutForm.jsx'
 import Settings from './components/Settings.jsx'
 import { isValidTime } from './utils/time.jsx'
@@ -144,6 +146,10 @@ function App() {
     setIsLogging(false)
   }
 
+  function handleDeleteWorkout(id) {
+    setWorkouts(previous => previous.filter(workout => workout.id !== id))
+  }
+
   return (
     <div className="app">
       <Header onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
@@ -155,11 +161,13 @@ function App() {
           <ul className="nav-list">
             <li><a href="#home" onClick={() => setActiveView('home')}><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
             <li><a href="#calendar" onClick={() => setActiveView('calendar')}><img src={calendarIcon} alt="" /> Calendar <span className="count">{workouts.length}</span></a></li>
+            <li><a href="#history" onClick={() => setActiveView('history')}><img src={checkIcon} alt="" className="history-icon" /> Workout History</a></li>
             <li><a aria-disabled="true"><img src={upcomingIcon} alt="" /> Dashboard</a></li>
           </ul>
         </nav>
         {activeView === 'home' && <Home workouts={workouts} timeFormat={preferences.timeFormat} />}
         {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} timeFormat={preferences.timeFormat} />}
+        {activeView === 'history' && <WorkoutHistory workouts={workouts} onDelete={handleDeleteWorkout} />}
       </div>
       {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} apiKey={apiKey} onOpenSettings={() => setIsSettingsOpen(true)} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
       {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}

@@ -431,6 +431,10 @@ button.cross:hover {
   border: 1px solid var(--border);
 }
 
+.history-icon {
+  filter: brightness(0) saturate(100%) invert(35%);
+}
+
 @media (max-width: 480px) {
   .nav {
       display: none;

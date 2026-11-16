@@ -11,13 +11,21 @@
    What follows is only what a blank form adds to it. */
 
 /* Type: the same segmented control as the Workouts filter. Picking one opens the rows. */
+/* On a narrow phone the five types don't all fit, so the control scrolls sideways. */
 .log-kind {
   align-self: flex-start;
   max-width: 100%;
   margin-top: 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.log-kind::-webkit-scrollbar {
+  display: none;
 }
 
 .log-kind button {
+  flex-shrink: 0;
   white-space: nowrap;
 }
 

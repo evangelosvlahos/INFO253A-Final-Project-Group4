@@ -4,7 +4,7 @@ import Nav from './components/Nav.jsx'
 import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
 
 import { useState, useEffect } from 'react'
-import WorkoutList from './components/WorkoutList.jsx'
+import Workouts from './components/Workouts.jsx'
 import Log from './components/Log.jsx'
 import WorkoutDetail from './components/WorkoutDetail.jsx'
 import Settings from './components/Settings.jsx'
@@ -215,13 +215,7 @@ function App() {
           />
         )}
         {!openedWorkout && activeView === 'workouts' && (
-          <main className="screen" id="workouts">
-            <header className="home-head">
-              <h1 className="home-title">Workouts</h1>
-              <div className="head-actions">{tools}</div>
-            </header>
-            <WorkoutList workouts={workouts} timeFormat={preferences.timeFormat} />
-          </main>
+          <Workouts workouts={workouts} tools={tools} onOpen={openWorkout} />
         )}
         {!openedWorkout && activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
         {!openedWorkout && activeView === 'log' && (

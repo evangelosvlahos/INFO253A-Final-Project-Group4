@@ -1,4 +1,4 @@
-/* Styles for the workout list and the settings dialog.
+/* Styles for the settings dialog.
    The page frame, nav and shared pieces are in index.css and beside each component. */
 
 /* The names these styles already use, pointed at the design tokens in index.css.
@@ -18,24 +18,6 @@
 
 h1{
   font-size: 20px;
-}
-
-/* A screen that hasn't moved to the new layout yet: same column, room for the nav below. */
-.container {
-  padding: 56px var(--gutter) calc(var(--nav-h) + 24px);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.workout-list {
-  list-style: none;
-  padding: 0;
-}
-
-.workout-list li {
-  padding: 0.5em;
 }
 
 input.circle {

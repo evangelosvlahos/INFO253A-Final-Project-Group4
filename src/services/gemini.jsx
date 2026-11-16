@@ -2,6 +2,10 @@ import { isValidTime } from '../utils/time.jsx'
 
 export const GEMINI_MODEL = 'gemini-3.5-flash-lite'
 export const MAX_AUDIO_BYTES = 10 * 1024 * 1024
+export const WORKOUT_TYPES = ['running', 'lifting', 'yoga', 'walking', 'other']
+
+/** A key for local development only, read from .env.local. The key typed in Settings comes first. */
+export const ENV_API_KEY = import.meta.env.VITE_GEMINI_API_KEY ?? ''
 
 const SYSTEM_PROMPT = `Extract one completed workout draft from the audio. Return only JSON, with no ID:
 {
@@ -11,12 +15,12 @@ const SYSTEM_PROMPT = `Extract one completed workout draft from the audio. Retur
   "durationMinutes": number | null,
   "feeling": 1 | 2 | 3 | 4 | 5 | null,
   "notes": string | null,
-  "type": "running" | "lifting" | "other",
+  "type": "running" | "lifting" | "yoga" | "walking" | "other",
   "data": object
 }
-For running, data is {"distanceKm": number | null}.
+For running and walking, data is {"distanceKm": number | null}.
 For lifting, data is {"exercises": [{"name": string, "sets": [{"reps": integer | null, "weightKg": number | null}]}]}.
-For other activities, data is {}.
+For yoga and other activities, data is {}. Use yoga for yoga, stretching, pilates and mobility work, and other for anything that fits none of the types.
 Use kilometers, kilograms, and minutes; convert explicitly stated units.
 Feeling: 1 very bad, 2 bad, 3 okay, 4 good, 5 great.
 Workout and exercise names must be non-empty strings. Use a short workout title based on the activity described; exercise names must come from the exercises mentioned.
@@ -37,7 +41,7 @@ const isNumber = (value, minimum, integer = false) => value === null || (
 // completes the form; saved workouts must satisfy the schema in App.jsx.
 export function validateWorkoutDraft(value) {
   const invalid = () => { throw new Error('Gemini returned an invalid workout format. Try again or enter the details manually.') }
-  if (!isObject(value) || !isText(value.name) || !['running', 'lifting', 'other'].includes(value.type)) invalid()
+  if (!isObject(value) || !isText(value.name) || !WORKOUT_TYPES.includes(value.type)) invalid()
   if (value.date !== null) {
     if (typeof value.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value.date)) invalid()
     const date = new Date(`${value.date}T00:00:00Z`)
@@ -49,7 +53,7 @@ export function validateWorkoutDraft(value) {
   if (!isObject(value.data)) invalid()
 
   let data = {}
-  if (value.type === 'running') {
+  if (value.type === 'running' || value.type === 'walking') {
     if (!isNumber(value.data.distanceKm, 0.01)) invalid()
     data = { distanceKm: value.data.distanceKm }
   } else if (value.type === 'lifting') {

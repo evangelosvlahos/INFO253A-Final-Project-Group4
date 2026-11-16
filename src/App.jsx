@@ -1,16 +1,14 @@
-import './App.css'
-import Header from './components/Header.jsx'
 import Home from './components/Home.jsx'
-import inboxIcon from './assets/inbox_icon.png'
-import calendarIcon from './assets/calendar_icon.png'
-import upcomingIcon from './assets/upcoming_icon.png'
-import checkIcon from './assets/check_icon.png'
+import Nav from './components/Nav.jsx'
+import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
 
 import { useState, useEffect } from 'react'
-import WorkoutCalendar from './components/WorkoutCalendar.jsx'
-import WorkoutHistory from './components/WorkoutHistory.jsx'
-import WorkoutForm from './components/WorkoutForm.jsx'
+import Workouts from './components/Workouts.jsx'
+import Log from './components/Log.jsx'
+import WorkoutDetail from './components/WorkoutDetail.jsx'
 import Settings from './components/Settings.jsx'
+import Stats from './components/Stats.jsx'
+import { ENV_API_KEY } from './services/gemini.jsx'
 import { isValidTime } from './utils/time.jsx'
 
 /**
@@ -31,6 +29,8 @@ import { isValidTime } from './utils/time.jsx'
  * @typedef {BaseWorkout & (
  *   { type: 'running', data: { distanceKm: number } } |
  *   { type: 'lifting', data: { exercises: WorkoutExercise[] } } |
+ *   { type: 'yoga', data: Record<string, never> } |
+ *   { type: 'walking', data: { distanceKm?: number } } |
  *   { type: 'other', data: Record<string, never> }
  * )} Workout
  */
@@ -79,25 +79,28 @@ const sampleWorkouts = [
     durationMinutes: 20,
     feeling: 5,
     notes: 'A short stretch after class.',
-    type: 'other',
+    type: 'yoga',
     data: {},
   },
 ]
 
 function App() {
   const [activeView, setActiveView] = useState('home');
-  const [isLogging, setIsLogging] = useState(false)
+  // What the nav's round button does while the Log screen is open.
+  const [mic, setMic] = useState(null)
+  // The workout opened on its own screen, if any.
+  const [openId, setOpenId] = useState(null)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [apiKey, setApiKey] = useState('')
   const [preferences, setPreferences] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY))
       return {
-        theme: saved?.theme === 'dark' ? 'dark' : 'light',
+        theme: saved?.theme === 'light' ? 'light' : 'dark',
         timeFormat: saved?.timeFormat === '24' ? '24' : '12',
       }
     } catch {
-      return { theme: 'light', timeFormat: '12' }
+      return { theme: 'dark', timeFormat: '12' }
     }
   })
   const [workouts, setWorkouts] = useState(() => {
@@ -143,34 +146,120 @@ function App() {
   function handleSaveWorkout(entry) {
     const workout = { ...entry, id: crypto.randomUUID() }
     setWorkouts(previous => [workout, ...previous])
-    setIsLogging(false)
+  }
+
+  function handleUpdateWorkout(id, patch) {
+    setWorkouts(previous => previous.map(workout => (workout.id === id ? { ...workout, ...patch } : workout)))
   }
 
   function handleDeleteWorkout(id) {
     setWorkouts(previous => previous.filter(workout => workout.id !== id))
   }
 
+  function goTo(view) {
+    setOpenId(null)
+    setIsSettingsOpen(false)
+    setActiveView(view)
+    window.scrollTo(0, 0)
+  }
+
+  function openWorkout(id) {
+    setOpenId(id)
+    window.scrollTo(0, 0)
+  }
+
+  function openSettings() {
+    setIsSettingsOpen(true)
+    window.scrollTo(0, 0)
+  }
+
+  function closeSettings() {
+    setIsSettingsOpen(false)
+    window.scrollTo(0, 0)
+  }
+
+  const openedWorkout = openId ? workouts.find(workout => workout.id === openId) : undefined
+  /** One of the tabs is showing, rather than a screen pushed over them. */
+  const onTab = !openedWorkout && !isSettingsOpen
+
+  const isDark = preferences.theme === 'dark'
+
+  // Theme and settings. Each screen places them at the right end of its title row.
+  const tools = (
+    <div className="head-tools">
+      {/* One tap flips the theme; the icon shows the theme it will switch to. */}
+      <button
+        className="icon-btn"
+        type="button"
+        aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+        onClick={() => setPreferences(previous => ({ ...previous, theme: isDark ? 'light' : 'dark' }))}
+      >
+        {isDark ? <SunIcon /> : <MoonIcon />}
+      </button>
+      <button className="icon-btn" type="button" aria-label="Settings" onClick={openSettings}>
+        <SettingsIcon />
+      </button>
+    </div>
+  )
+
   return (
     <div className="app">
-      <Header onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
-      <div className="container-wrapper">
-        <nav className="nav" aria-label="Main navigation">
-          <button className="log-workout-button" type="button" onClick={() => setIsLogging(true)} aria-haspopup="dialog">
-            + Log workout
-          </button>
-          <ul className="nav-list">
-            <li><a href="#home" onClick={() => setActiveView('home')}><img src={inboxIcon} alt="" /> Home <span className="count">{workouts.length}</span></a></li>
-            <li><a href="#calendar" onClick={() => setActiveView('calendar')}><img src={calendarIcon} alt="" /> Calendar <span className="count">{workouts.length}</span></a></li>
-            <li><a href="#history" onClick={() => setActiveView('history')}><img src={checkIcon} alt="" className="history-icon" /> Workout History</a></li>
-            <li><a aria-disabled="true"><img src={upcomingIcon} alt="" /> Dashboard</a></li>
-          </ul>
-        </nav>
-        {activeView === 'home' && <Home workouts={workouts} timeFormat={preferences.timeFormat} />}
-        {activeView === 'calendar' && <WorkoutCalendar workouts={workouts} timeFormat={preferences.timeFormat} />}
-        {activeView === 'history' && <WorkoutHistory workouts={workouts} onDelete={handleDeleteWorkout} />}
+      <div className="frame">
+        {isSettingsOpen && (
+          <Settings
+            apiKey={apiKey}
+            preferences={preferences}
+            onSave={settings => {
+              setApiKey(settings.apiKey)
+              setPreferences(settings.preferences)
+              closeSettings()
+            }}
+            onClose={closeSettings}
+          />
+        )}
+        {openedWorkout && !isSettingsOpen && (
+          <WorkoutDetail
+            workout={openedWorkout}
+            timeFormat={preferences.timeFormat}
+            onBack={() => openWorkout(null)}
+            onUpdate={patch => handleUpdateWorkout(openedWorkout.id, patch)}
+            onDelete={() => {
+              handleDeleteWorkout(openedWorkout.id)
+              openWorkout(null)
+            }}
+          />
+        )}
+        {onTab && activeView === 'home' && (
+          <Home
+            workouts={workouts}
+            timeFormat={preferences.timeFormat}
+            tools={tools}
+            onOpen={openWorkout}
+            onAll={() => goTo('workouts')}
+          />
+        )}
+        {onTab && activeView === 'workouts' && (
+          <Workouts workouts={workouts} tools={tools} onOpen={openWorkout} />
+        )}
+        {onTab && activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
+        {/* The Log form stays in place, out of sight, while Settings is open over it,
+            so nothing typed or recorded is lost on the way to adding a key. */}
+        {!openedWorkout && activeView === 'log' && (
+          <div className="screen-keep" hidden={isSettingsOpen}>
+            <Log
+              timeFormat={preferences.timeFormat}
+              // The key typed in Settings comes first; .env.local is the fallback for local development.
+              apiKey={apiKey.trim() || ENV_API_KEY}
+              onOpenSettings={openSettings}
+              onSave={handleSaveWorkout}
+              onDone={() => goTo('home')}
+              registerMic={setMic}
+            />
+          </div>
+        )}
+        {/* A workout and Settings are pushed screens: back button, no tab bar. */}
+        {onTab && <Nav tab={activeView} onChange={goTo} mic={mic} />}
       </div>
-      {isLogging && <WorkoutForm timeFormat={preferences.timeFormat} apiKey={apiKey} onOpenSettings={() => setIsSettingsOpen(true)} onAdd={handleSaveWorkout} onClose={() => setIsLogging(false)} />}
-      {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>
   )
 }

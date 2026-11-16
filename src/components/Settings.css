@@ -1,0 +1,32 @@
+/* Settings borrows the edit screen: the bar across the top and the card of rows.
+   What follows is only what it adds. */
+
+/* No title above the card here, so it sits straight under the bar. */
+.set-props {
+  margin-top: 0;
+}
+
+/* The key is typed into its row, in the row's own type. */
+.set-key {
+  flex: 1;
+  min-width: 0;
+}
+
+.set-key input {
+  width: 100%;
+  height: 54px;
+  font: inherit;
+  color: inherit;
+  caret-color: var(--accent);
+}
+
+.set-key input::placeholder {
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+.set-link {
+  color: var(--accent);
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}

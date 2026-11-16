@@ -1,3 +1,357 @@
-/* Global reset only. Your Assignment 1 styles go in App.css. */
-* { box-sizing: border-box; }
-body { margin: 0; }
+/* Design foundation: the palette, type and sizes every screen draws from.
+   Component styles live in App.css and beside each component. */
+
+:root {
+  color-scheme: dark;
+
+  /* Dark is the default theme. The whole palette: near-black neutrals, white ink,
+     and one accent (a soft blue). */
+  --paper: #0e0e10;
+  --paper-2: #17171a;
+  --paper-3: #26262b;
+  --ink: #f5f5f6;
+  --ink-2: #a1a1a9;
+  --ink-3: #62626b;
+  --line: #242428;
+  --accent: #8fb6ff;
+  /* Text and icons that sit on the accent. */
+  --accent-ink: #0d1524;
+
+  /* System fonts: SF Pro on Apple devices, the platform's own UI font elsewhere. */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", system-ui, "Helvetica Neue", sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", system-ui, "Helvetica Neue", sans-serif;
+  --font-num: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", system-ui, "Helvetica Neue", sans-serif;
+
+  /* Mobile first: one column, as wide as the phone. Larger screens widen it below. */
+  --gutter: 28px;
+  --radius-card: 18px;
+  --frame: 430px;
+  /* The floating nav never grows past phone width. */
+  --nav-w: 430px;
+  /* Floating nav: 66px bar + 20px off the bottom edge. */
+  --nav-h: 86px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Light theme: the same roles, flipped. The accent is a deeper blue so it reads on white. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper: #f5f5f6;
+  --paper-2: #ffffff;
+  --paper-3: #e6e6ea;
+  --ink: #0e0e10;
+  --ink-2: #5c5c66;
+  --ink-3: #9a9aa3;
+  --line: #e2e2e6;
+  --accent: #2f6fe4;
+  --accent-ink: #ffffff;
+}
+
+/* Small phones: tighter margins. */
+@media (max-width: 359px) {
+  :root {
+    --gutter: 20px;
+  }
+}
+
+/* Large phones and tablets: a wider column with more air at the sides. */
+@media (min-width: 600px) {
+  :root {
+    --frame: 600px;
+    --gutter: 32px;
+  }
+}
+
+/* Laptops and desktops. */
+@media (min-width: 1024px) {
+  :root {
+    --frame: 680px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- frame ---------- */
+
+/* The page: one centred column, with the nav floating over its foot. */
+.app {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--paper);
+}
+
+.frame {
+  width: 100%;
+  max-width: var(--frame);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ---------- screens ---------- */
+
+/* A screen fills the frame and leaves room for the nav below. */
+.screen {
+  flex: 1;
+  padding: 0 var(--gutter) calc(var(--nav-h) + 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* A screen kept in place while another is shown over it: no box of its own, or none at all. */
+.screen-keep {
+  display: contents;
+}
+
+.screen-keep[hidden] {
+  display: none;
+}
+
+/* The top of a screen: its title, and any control that belongs beside it. */
+.home-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 56px 0 28px;
+}
+
+/* The right end of that row: the screen's own control, then theme and settings. */
+.head-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Pulled out by the buttons' own inset, so the last icon lines up with the edge of the column. */
+.head-tools {
+  display: flex;
+  margin-right: -9px;
+}
+
+.head-tools .icon-btn {
+  width: 36px;
+  height: 36px;
+}
+
+.head-tools .icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* A title with a shorter wording for phones, where the row is tight. */
+.title-short {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .title-long,
+  .title-year {
+    display: none;
+  }
+
+  .title-short {
+    display: inline;
+  }
+
+  .home-head {
+    gap: 8px;
+  }
+
+  .head-tools .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .head-tools {
+    margin-right: -7px;
+  }
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* The one small-caps label, wherever it appears. */
+.eyebrow,
+.st-eyebrow,
+.vc-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* ---------- controls ---------- */
+
+/* A round button holding one icon. */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Activity figure: a mask filled with the current text colour. */
+.glyph {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  mask: center / contain no-repeat;
+  -webkit-mask: center / contain no-repeat;
+}
+
+/* A segmented choice: a few short options, one of them picked. */
+.period-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.period-toggle button {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 160ms var(--ease), color 160ms var(--ease);
+}
+
+.period-toggle button[aria-pressed="true"] {
+  background: var(--paper-3);
+  color: var(--ink);
+}
+
+/* ---------- surfaces ---------- */
+
+/* The one card: raised surface, hairline border. Also used for empty states. */
+.panel {
+  padding: 20px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.panel-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+/* ---------- animation ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 220ms var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

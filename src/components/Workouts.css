@@ -1,0 +1,48 @@
+/* Workouts: every workout, grouped by month. The rows are the same ones Home lists under "Earlier". */
+
+/* Period: one row from the edit screen's card, which opens the wheel. */
+.wk-period {
+  margin: 0 0 16px;
+}
+
+/* Type filter: the same segmented control as the Stats period toggle, sized to its labels.
+   On a narrow phone the labels don't all fit, so the control scrolls sideways. */
+.wk-filter {
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.wk-filter::-webkit-scrollbar {
+  display: none;
+}
+
+.wk-filter button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.wk-group {
+  margin-top: 24px;
+}
+
+.wk-group + .wk-group {
+  margin-top: 32px;
+}
+
+.wk-group .eyebrow {
+  margin: 0 0 2px;
+}
+
+.wk-group .earlier-row:last-child {
+  border-bottom: 0;
+}
+
+.wk-dur {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}

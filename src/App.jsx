@@ -6,6 +6,7 @@ import { MoonIcon, SettingsIcon, SunIcon } from './components/Icons.jsx'
 import { useState, useEffect } from 'react'
 import WorkoutList from './components/WorkoutList.jsx'
 import Log from './components/Log.jsx'
+import WorkoutDetail from './components/WorkoutDetail.jsx'
 import Settings from './components/Settings.jsx'
 import Stats from './components/Stats.jsx'
 import { ENV_API_KEY } from './services/gemini.jsx'
@@ -88,6 +89,8 @@ function App() {
   const [activeView, setActiveView] = useState('home');
   // What the nav's round button does while the Log screen is open.
   const [mic, setMic] = useState(null)
+  // The workout opened on its own screen, if any.
+  const [openId, setOpenId] = useState(null)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [apiKey, setApiKey] = useState('')
   const [preferences, setPreferences] = useState(() => {
@@ -146,10 +149,26 @@ function App() {
     setWorkouts(previous => [workout, ...previous])
   }
 
+  function handleUpdateWorkout(id, patch) {
+    setWorkouts(previous => previous.map(workout => (workout.id === id ? { ...workout, ...patch } : workout)))
+  }
+
+  function handleDeleteWorkout(id) {
+    setWorkouts(previous => previous.filter(workout => workout.id !== id))
+  }
+
   function goTo(view) {
+    setOpenId(null)
     setActiveView(view)
     window.scrollTo(0, 0)
   }
+
+  function openWorkout(id) {
+    setOpenId(id)
+    window.scrollTo(0, 0)
+  }
+
+  const openedWorkout = openId ? workouts.find(workout => workout.id === openId) : undefined
 
   const isDark = preferences.theme === 'dark'
 
@@ -174,17 +193,28 @@ function App() {
   return (
     <div className="app">
       <div className="frame">
-        {activeView === 'home' && (
+        {openedWorkout && (
+          <WorkoutDetail
+            workout={openedWorkout}
+            timeFormat={preferences.timeFormat}
+            onBack={() => openWorkout(null)}
+            onUpdate={patch => handleUpdateWorkout(openedWorkout.id, patch)}
+            onDelete={() => {
+              handleDeleteWorkout(openedWorkout.id)
+              openWorkout(null)
+            }}
+          />
+        )}
+        {!openedWorkout && activeView === 'home' && (
           <Home
             workouts={workouts}
             timeFormat={preferences.timeFormat}
             tools={tools}
-            // Opening a single workout arrives with the workout screen.
-            onOpen={() => {}}
+            onOpen={openWorkout}
             onAll={() => goTo('workouts')}
           />
         )}
-        {activeView === 'workouts' && (
+        {!openedWorkout && activeView === 'workouts' && (
           <main className="screen" id="workouts">
             <header className="home-head">
               <h1 className="home-title">Workouts</h1>
@@ -193,8 +223,8 @@ function App() {
             <WorkoutList workouts={workouts} timeFormat={preferences.timeFormat} />
           </main>
         )}
-        {activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
-        {activeView === 'log' && (
+        {!openedWorkout && activeView === 'stats' && <Stats workouts={workouts} tools={tools} />}
+        {!openedWorkout && activeView === 'log' && (
           <Log
             timeFormat={preferences.timeFormat}
             // The key typed in Settings comes first; .env.local is the fallback for local development.
@@ -204,7 +234,8 @@ function App() {
             registerMic={setMic}
           />
         )}
-        <Nav tab={activeView} onChange={goTo} mic={mic} />
+        {/* A workout is a pushed screen: back button, no tab bar. */}
+        {!openedWorkout && <Nav tab={activeView} onChange={goTo} mic={mic} />}
       </div>
       {isSettingsOpen && <Settings apiKey={apiKey} preferences={preferences} onSave={settings => { setApiKey(settings.apiKey); setPreferences(settings.preferences); setIsSettingsOpen(false) }} onClose={() => setIsSettingsOpen(false)} />}
     </div>

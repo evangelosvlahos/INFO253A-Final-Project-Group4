@@ -215,8 +215,7 @@
   margin-top: 0;
 }
 
-.desc-row > .feel-score,
-.desc-row > .feel-tip-wrap {
+.desc-row > .feel-score {
   margin-left: auto;
 }
 
@@ -234,58 +233,6 @@
 
 .tl .is-on .desc-row > .tl-desc {
   margin-top: 0;
-}
-
-/* What the number means: shown on tap, hover or keyboard focus. */
-.feel-tip-wrap {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.feel-tip-wrap {
-  display: flex;
-}
-
-/* A bigger tap target that doesn't make the line any taller. */
-.feel-tip-wrap .feel-score {
-  padding: 8px 0 8px 8px;
-  margin: -8px 0;
-  border-radius: 8px;
-}
-
-.feel-tip {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  z-index: 5;
-  padding: 7px 12px;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--ink);
-  background: var(--paper-3);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px);
-  transition: opacity 160ms var(--ease), transform 160ms var(--ease), visibility 160ms;
-  pointer-events: none;
-}
-
-.feel-tip-wrap.is-open .feel-tip,
-.feel-tip-wrap .feel-score:focus-visible + .feel-tip {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-
-@media (hover: hover) {
-  .feel-tip-wrap:hover .feel-tip {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
 }
 
 /* --- several workouts: a spine down the day --- */

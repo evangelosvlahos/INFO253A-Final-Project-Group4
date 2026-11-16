@@ -4,7 +4,6 @@ import { formatWorkoutTime } from '../utils/time.jsx'
 function Settings({ apiKey, preferences, onSave, onClose }) {
   const dialogRef = useRef(null)
   const [key, setKey] = useState(apiKey)
-  const [theme, setTheme] = useState(preferences.theme)
   const [timeFormat, setTimeFormat] = useState(preferences.timeFormat)
 
   useEffect(() => {
@@ -15,7 +14,7 @@ function Settings({ apiKey, preferences, onSave, onClose }) {
 
   function handleSubmit(event) {
     event.preventDefault()
-    onSave({ apiKey: key.trim(), preferences: { theme, timeFormat } })
+    onSave({ apiKey: key.trim(), preferences: { ...preferences, timeFormat } })
   }
 
   return (
@@ -23,15 +22,8 @@ function Settings({ apiKey, preferences, onSave, onClose }) {
       <form className="workout-form" onSubmit={handleSubmit}>
         <h1 id="settings-title">Settings</h1>
         <label>
-          Theme
-          <select value={theme} onChange={event => setTheme(event.target.value)} autoFocus>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </label>
-        <label>
           Time format
-          <select value={timeFormat} onChange={event => setTimeFormat(event.target.value)}>
+          <select value={timeFormat} onChange={event => setTimeFormat(event.target.value)} autoFocus>
             <option value="12">12-hour</option>
             <option value="24">24-hour</option>
           </select>

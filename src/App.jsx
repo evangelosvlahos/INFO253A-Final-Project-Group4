@@ -91,11 +91,11 @@ function App() {
     try {
       const saved = JSON.parse(localStorage.getItem(PREFERENCES_KEY))
       return {
-        theme: saved?.theme === 'dark' ? 'dark' : 'light',
+        theme: saved?.theme === 'light' ? 'light' : 'dark',
         timeFormat: saved?.timeFormat === '24' ? '24' : '12',
       }
     } catch {
-      return { theme: 'light', timeFormat: '12' }
+      return { theme: 'dark', timeFormat: '12' }
     }
   })
   const [workouts, setWorkouts] = useState(() => {
@@ -146,7 +146,10 @@ function App() {
 
   return (
     <div className="app">
-      <Header onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
+      <Header
+        theme={preferences.theme}
+        onToggleTheme={() => setPreferences(previous => ({ ...previous, theme: previous.theme === 'dark' ? 'light' : 'dark' }))}
+        onLogWorkout={() => setIsLogging(true)} onOpenSettings={() => setIsSettingsOpen(true)} />
       <div className="container-wrapper">
         <nav className="nav" aria-label="Main navigation">
           <button className="log-workout-button" type="button" onClick={() => setIsLogging(true)} aria-haspopup="dialog">

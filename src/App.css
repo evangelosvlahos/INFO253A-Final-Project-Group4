@@ -1,48 +1,28 @@
 /* Paste your Assignment 1 styles.css here. Keep the icons in src/assets/ so url(assets/...) paths keep working. */
 /* This is your CSS files */
 * {
-  font-family: Roboto;
   font-size: 14px;
   line-height: 1.5;
 }
 
+/* The names these styles already use, pointed at the design tokens in index.css.
+   The tokens change with the theme, so one set covers dark and light. */
 :root {
   --radius: 5px;
-  --page-bg: #fff;
-  --surface: #fff;
-  --text: #171717;
-  --sidebar-bg: #fefbf2;
-  --muted: #666;
-  --border: #ccc;
-  --control-bg: #fff;
-  --button-bg: #eee;
-  --accent: #dc4c3e;
-  --accent-hover: #b83d32;
-  --hover-bg: #f2f6ff;
-  --hover-text: #0a58ca;
-  --today-bg: #fff3f1;
-  --weekend: #b52d20;
-  --danger: #b52d20;
-  color-scheme: light;
-}
-
-:root[data-theme="dark"] {
-  --page-bg: #16181b;
-  --surface: #202327;
-  --text: #f2f2f2;
-  --sidebar-bg: #1b1e22;
-  --muted: #b0b5bd;
-  --border: #505760;
-  --control-bg: #25292e;
-  --button-bg: #353b43;
-  --accent: #b83d32;
-  --accent-hover: #a3332a;
-  --hover-bg: #313b49;
-  --hover-text: #d9e9ff;
-  --today-bg: #3e2a28;
-  --weekend: #ffaba2;
-  --danger: #ffaba2;
-  color-scheme: dark;
+  --page-bg: var(--paper);
+  --surface: var(--paper-2);
+  --text: var(--ink);
+  --sidebar-bg: var(--paper-2);
+  --muted: var(--ink-2);
+  --border: var(--paper-3);
+  --control-bg: var(--paper);
+  --button-bg: var(--paper-3);
+  --accent-hover: var(--ink);
+  --hover-bg: var(--paper-3);
+  --hover-text: var(--ink);
+  --today-bg: var(--paper-3);
+  --weekend: var(--ink-2);
+  --danger: var(--ink);
 }
 
 body {
@@ -57,8 +37,8 @@ h1{
 /* header stuffs */
 .site-header {
   display: flex;
-  background-color: var(--accent);
-  color: #ffffff;
+  background-color: var(--surface);
+  color: var(--text);
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
   padding: 10px;
@@ -91,7 +71,7 @@ h1{
   background-color: transparent;
   border: none;
   outline: none;
-  color: white;
+  color: var(--text);
   flex: 1;
   min-width: 0;
 }
@@ -288,7 +268,7 @@ button.cross:hover {
   border-radius: var(--radius);
   padding: 8px 12px;
   background: var(--accent);
-  color: white;
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
@@ -390,10 +370,10 @@ button.cross:hover {
   align-self: center;
   margin-right: 12px;
   padding: 6px 12px;
-  border: 1px solid white;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   background: transparent;
-  color: white;
+  color: var(--text);
   cursor: pointer;
 }
 
@@ -418,6 +398,33 @@ button.cross:hover {
 
 .voice-input p {
   margin: 0;
+}
+
+/* A round icon button, used for the theme switch in the header. */
+.icon-btn {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 120ms var(--ease), color 120ms var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--paper-3);
+  color: var(--ink);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .workout-form button:disabled {
